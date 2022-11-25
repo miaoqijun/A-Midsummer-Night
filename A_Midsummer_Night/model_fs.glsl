@@ -304,6 +304,6 @@ void PBR_shading()
 
 void main()
 {
-    //Phong_shading();
-    PBR_shading();
+    Phong_shading();
+    //PBR_shading();
 }
