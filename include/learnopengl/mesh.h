@@ -59,37 +59,48 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader& shader, float metallic, float roughness, float ao)
+    void Draw(Shader& shader, bool use_PBR)
     {
         // bind appropriate textures
         unsigned int diffuseNr = 1;
         unsigned int specularNr = 1;
         unsigned int normalNr = 1;
         unsigned int heightNr = 1;
+        unsigned int shininessNr = 1;
         for (unsigned int i = 0; i < textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + (i + 3)); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
             string number;
             string name = textures[i].type;
-            if (name == "texture_diffuse")
+            if (name == "texture_diffuse") {
                 number = std::to_string(diffuseNr++);
-            else if (name == "texture_specular")
+                if (use_PBR)
+                    name = "texture_albedo";
+            }
+            else if (name == "texture_specular") {
                 number = std::to_string(specularNr++); // transfer unsigned int to string
-            else if (name == "texture_normal")
+                if (use_PBR)
+                    name = "texture_roughness";
+            }
+            else if (name == "texture_normal") {
                 number = std::to_string(normalNr++); // transfer unsigned int to string
-            else if (name == "texture_height")
+            }
+            else if (name == "texture_ambient") {
                 number = std::to_string(heightNr++); // transfer unsigned int to string
-
+                if (use_PBR)
+                    name = "texture_ao";
+            }
+            else if (name == "texture_shininess") {
+                number = std::to_string(shininessNr++); // transfer unsigned int to string
+                if (use_PBR)
+                    name = "texture_metalness";
+            }
             // now set the sampler to the correct texture unit
             glUniform1i(glGetUniformLocation(shader.ID, ("material." + name + number).c_str()), i + 3);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
-
-        shader.setFloat("material.metallic", metallic);
-        shader.setFloat("material.roughness", roughness);
-        shader.setFloat("material.ao", ao);
 
         // draw mesh
         glBindVertexArray(VAO);

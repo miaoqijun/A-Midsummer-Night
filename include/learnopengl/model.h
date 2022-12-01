@@ -31,24 +31,18 @@ public:
     vector<Mesh>    meshes;
     string directory;
     bool gammaCorrection;
-    float metallic;
-    float roughness;
-    float ao;
 
     // constructor, expects a filepath to a 3D model.
-    Model(string const& path, float metallic_in = 0.0, float roughness_in = 0.8, float ao_in = 0.2, bool gamma = false) : gammaCorrection(gamma)
+    Model(string const& path, bool gamma = false) : gammaCorrection(gamma)
     {
         loadModel(path);
-        metallic = metallic_in;
-        roughness = roughness_in;
-        ao = ao_in;
     }
 
     // draws the model, and thus all its meshes
-    void Draw(Shader& shader)
+    void Draw(Shader& shader, bool use_PBR)
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shader, metallic, roughness, ao);
+            meshes[i].Draw(shader, use_PBR);
     }
 
 private:
@@ -164,11 +158,14 @@ private:
         vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         // 3. normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // 4. height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        // 4. ambient maps
+        std::vector<Texture> ambientMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
+        textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
+        // 5. shininess maps
+        vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_shininess");
+        textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());
 
         // return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, textures);

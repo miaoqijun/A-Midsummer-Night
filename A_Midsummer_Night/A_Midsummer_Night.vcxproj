@@ -144,8 +144,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="model_fs.glsl" />
-    <None Include="model_vs.glsl" />
+    <None Include="PBR_fs.glsl" />
+    <None Include="PBR_vs.glsl" />
+    <None Include="Phong_fs.glsl" />
+    <None Include="Phong_vs.glsl" />
     <None Include="point_shadows_fs.glsl" />
     <None Include="point_shadows_gs.glsl" />
     <None Include="point_shadows_vs.glsl" />

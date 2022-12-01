@@ -12,5 +12,8 @@ newmtl 10450_Rectangular_Grass_Patch_v1
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0900 0.0900 0.0900
 	Ke 0.0000 0.0000 0.0000
-	map_Ka 10450_Rectangular_Grass_Patch_v1_Diffuse.jpg
-	map_Kd 10450_Rectangular_Grass_Patch_v1_Diffuse.jpg
+	map_Kd Grass001_1K_Color.jpg
+	map_Ks Grass001_1K_Roughness.jpg
+	map_Ka Grass001_1K_AmbientOcclusion.jpg
+	map_Ns Black_Metalness.jpg
+	map_Kn Grass001_1K_NormalGL.jpg

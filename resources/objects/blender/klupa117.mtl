@@ -9,7 +9,11 @@ Ka 0.200000 0.200000 0.200000
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ns 0.000000
-map_Kd drvoKlupa117.jpg
+map_Kd Planks023A_1K_Color.jpg
+map_Ns Planks023A_1K_Metalness.jpg
+map_Ks Planks023A_1K_Roughness.jpg
+map_Ka Planks023A_1K_AmbientOcclusion.jpg
+map_Kn Planks023A_1K_NormalGL.jpg
 
 newmtl farbaKlupa117
 illum 2
@@ -18,7 +22,11 @@ Ka 0.200000 0.200000 0.200000
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ns 0.000000
-map_Kd farbaKlupa117.jpg
+map_Kd Metal046B_1K_Color.jpg
+map_Ns Metal046B_1K_Metalness.jpg
+map_Ks Metal046B_1K_Roughness.jpg
+map_Ka White_AmbientOcclusion.jpg
+map_Kn Metal046B_1K_NormalGL.jpg
 
 newmtl srafKlupa117
 illum 2
@@ -27,4 +35,8 @@ Ka 0.200000 0.200000 0.200000
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ns 0.000000
-map_Kd srafKlupa117.jpg
+map_Kd Metal042A_1K_Color.jpg
+map_Ns Metal042A_1K_Metalness.jpg
+map_Ks Metal042A_1K_Roughness.jpg
+map_Ka White_AmbientOcclusion.jpg
+map_Kn Metal042A_1K_NormalGL.jpg
