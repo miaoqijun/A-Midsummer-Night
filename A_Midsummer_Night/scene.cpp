@@ -62,11 +62,11 @@ void Scene::load_models()
 {
     WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
-        glm::vec3(0.1f, 0.1f, 0.1f),
-        glm::radians(180.0f),
+        glm::vec3(0.2f, 0.2f, 0.2f),
+        glm::radians(-90.0f),
         glm::vec3(0.0f, 1.0f, 0.0f),
-        Model("../resources/objects/Farmhouse/farmhouse_obj.obj"),
-        false
+        Model("../resources/objects/House/highpoly_town_house_01.obj"),
+        true
     };
     models.push_back(house);
 
@@ -109,7 +109,7 @@ void Scene::load_models()
     }
 
     WorldModel blender = {
-        glm::vec3(-1.2f, 0.1f, 0.35f),
+        glm::vec3(-1.5f, 0.1f, 0.35f),
         glm::vec3(0.02f, 0.02f, 0.02f),
         glm::radians(0.0f),
         glm::vec3(1.0f, 0.0f, 0.0f),
