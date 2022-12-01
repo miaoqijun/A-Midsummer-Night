@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-#define NR_POINT_LIGHTS 3
+#define NR_POINT_LIGHTS 2
 
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 
@@ -11,6 +11,7 @@ struct Material {
     sampler2D texture_roughness1;
     sampler2D texture_ao1;
     sampler2D texture_normal1;
+    sampler2D texture_emissive1;
 }; 
 
 struct PointLight {
@@ -235,5 +236,6 @@ void main()
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    FragColor = vec4(color, 1.0);
+    float emissive = texture(material.texture_emissive1, fs_in.TexCoords).r;
+    FragColor = vec4(color + vec3(emissive / 2.2), 1.0);
 }

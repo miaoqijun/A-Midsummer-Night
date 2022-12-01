@@ -1,0 +1,8 @@
+newmtl sofa
+illum 2
+map_Ka Textures\White_AmbientOcclusion.jpg
+map_Kd Textures\sofa_D.png
+map_Ks Textures\sofa_R.png
+map_Ns Textures\sofa_M.png
+map_Kn Textures\sofa_N.png
+map_Ke Textures\Black_Emissive.jpg

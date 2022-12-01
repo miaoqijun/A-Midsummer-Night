@@ -1,0 +1,34 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Material.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Textures\\WoodQuarteredChiffon001_COL_3K.jpg
+map_Ks Textures\\WoodQuarteredChiffon001_GLOSS_3K.jpg
+map_Kn Textures\\WoodQuarteredChiffon001_NRM_3K.jpg
+map_Ka Textures\\White_AmbientOcclusion.jpg
+map_Ns Textures\\WoodQuarteredChiffon001_REFL_3K.jpg
+map_Ke Textures\\Black_Emissive.jpg
+
+newmtl Material.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Textures\\WoodFineDark004_COL_4K.jpg
+map_Ns Textures\\WoodFineDark004_REFL_4K.jpg
+map_Ks Textures\\WoodFineDark004_GLOSS_4K.jpg
+map_Ka Textures\\White_AmbientOcclusion.jpg
+map_Kn Textures\\WoodFineDark004_NRM_4K.jpg
+map_Ke Textures\\Black_Emissive.jpg

@@ -32,12 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Phong_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="Phong_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="point_shadows_fs.glsl">
       <Filter>资源文件</Filter>
     </None>

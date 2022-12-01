@@ -59,45 +59,35 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader& shader, bool use_PBR)
+    void Draw(Shader& shader)
     {
         // bind appropriate textures
-        unsigned int diffuseNr = 1;
-        unsigned int specularNr = 1;
+        unsigned int albedoNr = 1;
+        unsigned int roughnessNr = 1;
         unsigned int normalNr = 1;
-        unsigned int heightNr = 1;
-        unsigned int shininessNr = 1;
+        unsigned int aoNr = 1;
+        unsigned int metalnessNr = 1;
+        unsigned int emissiveNr = 1;
         for (unsigned int i = 0; i < textures.size(); i++)
         {
-            glActiveTexture(GL_TEXTURE0 + (i + 3)); // active proper texture unit before binding
+            glActiveTexture(GL_TEXTURE0 + (i + 2)); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
             string number;
             string name = textures[i].type;
-            if (name == "texture_diffuse") {
-                number = std::to_string(diffuseNr++);
-                if (use_PBR)
-                    name = "texture_albedo";
-            }
-            else if (name == "texture_specular") {
-                number = std::to_string(specularNr++); // transfer unsigned int to string
-                if (use_PBR)
-                    name = "texture_roughness";
-            }
-            else if (name == "texture_normal") {
+            if (name == "texture_albedo")
+                number = std::to_string(albedoNr++);
+            else if (name == "texture_roughness")
+                number = std::to_string(roughnessNr++); // transfer unsigned int to string
+            else if (name == "texture_normal")
                 number = std::to_string(normalNr++); // transfer unsigned int to string
-            }
-            else if (name == "texture_ambient") {
-                number = std::to_string(heightNr++); // transfer unsigned int to string
-                if (use_PBR)
-                    name = "texture_ao";
-            }
-            else if (name == "texture_shininess") {
-                number = std::to_string(shininessNr++); // transfer unsigned int to string
-                if (use_PBR)
-                    name = "texture_metalness";
-            }
+            else if (name == "texture_ao")
+                number = std::to_string(aoNr++); // transfer unsigned int to string
+            else if (name == "texture_metalness")
+                number = std::to_string(metalnessNr++); // transfer unsigned int to string
+            else if (name == "texture_emissive")
+                number = std::to_string(emissiveNr++); // transfer unsigned int to string
             // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shader.ID, ("material." + name + number).c_str()), i + 3);
+            glUniform1i(glGetUniformLocation(shader.ID, ("material." + name + number).c_str()), i + 2);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }

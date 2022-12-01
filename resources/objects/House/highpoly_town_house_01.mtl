@@ -15,6 +15,7 @@ map_Kd textures\wood\T_darkwood_basecolor.png
 map_Ks textures\wood\T_wood_roughness.png
 map_Ns textures\wood\Black_Metalness.jpg
 map_Kn textures\wood\T_wood_normal.png
+map_Ke textures\Black_Emissive.jpg
 
 newmtl rocks.001
 Ns 96.078431
@@ -30,6 +31,7 @@ map_Kd textures\rocks\rock_bc.jpg
 map_Ks textures\rocks\rock_r.jpg
 map_Ns textures\rocks\Black_Metalness.jpg
 map_Kn textures\rocks\rock_n.jpg
+map_Ke textures\Black_Emissive.jpg
 
 newmtl rooftiles.001
 Ns 96.078431
@@ -45,6 +47,7 @@ map_Kd textures\rooftiles\T_darkwood_basecolor.png
 map_Ks textures\rooftiles\T_wood_roughness.png
 map_Ns textures\rooftiles\Black_Metalness.jpg
 map_Kn textures\rooftiles\T_wood_normal.png
+map_Ke textures\Black_Emissive.jpg
 
 newmtl wood.001
 Ns 96.078431
@@ -60,3 +63,4 @@ map_Kd textures\wood\T_brightwood_basecolor.png
 map_Ks textures\wood\T_wood_roughness.png
 map_Ns textures\wood\Black_Metalness.jpg
 map_Kn textures\wood\T_wood_normal.png
+map_Ke textures\Black_Emissive.jpg
