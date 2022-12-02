@@ -102,8 +102,13 @@ float GetGBufferDepth(vec2 uv) {
     return depth;
 }
 
-#define MAX_DIST 20.0
+#define MAX_DIST 1.0
 #define STEP_LONG 0.05
+
+bool outScreen(vec3 pos){
+    vec2 uv = GetScreenCoordinate(pos);
+    return any(bvec4(lessThan(uv, vec2(0.0)), greaterThan(uv, vec2(1.0))));
+}
 
 bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
     int level = 0;
@@ -111,7 +116,7 @@ bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
     vec3 nowPos = ori;
     float total_dist = 0.0;
 
-    while(true) {
+    while(!outScreen(nowPos)) {
         vec3 nextPos = nowPos + delta;
         float curDepth = GetDepth(nextPos);
         float depth = GetGBufferDepth(GetScreenCoordinate(nextPos));
@@ -130,7 +135,7 @@ bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
                 break;
         }
     }
-    hitPos = nowPos + delta;
+    hitPos = nowPos;
     return true;
 }
 
@@ -247,7 +252,7 @@ void main() {
     vec2 uv = GetScreenCoordinate(fs_in.FragPos);
     L = texture(colorMap, uv).rgb;
 
-    if(SSR_ON == 1 && L.r + L.g + L.b <= 0.001) {
+    if(SSR_ON == 1) {
         vec3 L_in = vec3(0.0);
         for(int i = 0; i < SAMPLE_NUM; i++) {    
             vec3 normal = normalize(fs_in.Normal);
