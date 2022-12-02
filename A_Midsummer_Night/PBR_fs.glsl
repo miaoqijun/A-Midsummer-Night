@@ -228,14 +228,14 @@ void main()
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
     vec3 ambient = vec3(0.03) * albedo * ao;
-
-    vec3 color = ambient + Lo;
+    float emissive = texture(material.texture_emissive1, fs_in.TexCoords).r;
+    vec3 color = Lo + vec3(emissive);
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    float emissive = texture(material.texture_emissive1, fs_in.TexCoords).r;
-    FragColor = vec4(color + vec3(emissive / 2.2), 1.0);
+
+    FragColor = vec4(color, 1.0);
 }

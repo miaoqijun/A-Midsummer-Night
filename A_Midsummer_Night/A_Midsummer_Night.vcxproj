@@ -153,6 +153,8 @@
     <None Include="shadow_mapping_vs.glsl" />
     <None Include="skybox_fs.glsl" />
     <None Include="skybox_vs.glsl" />
+    <None Include="SSR_fs.glsl" />
+    <None Include="SSR_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene.h" />

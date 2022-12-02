@@ -42,10 +42,40 @@ Scene::Scene()
         PBR_shader.use();
         PBR_shader.setInt("depthMap[" + to_string(i) + "]", i);
     }
+
+    SSR_shader = Shader(SSR_vs_path, SSR_fs_path);
+    SSR_shader.use();
+    SSR_shader.setInt("colorMap", 0);
+    SSR_shader.setInt("depthMap", 1);
+
+    // framebuffer configuration
+    // -------------------------
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glGenTextures(1, &depthBuffer);
+    glBindTexture(GL_TEXTURE_2D, depthBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Scene::load_models()
 {
+    const float all_scale = 1.0;
     WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
         glm::vec3(0.3f, 0.3f, 0.3f),
@@ -102,9 +132,12 @@ void Scene::load_models()
         Model("../resources/objects/Sofa/sofa.obj")
     };
     models.push_back(sofa);
+    for (int i = 0; i < models.size(); i++) {
+        models[i].scale *= all_scale;
+    }
 }
 
-void Scene::render(glm::mat4 view, glm::mat4 projection)
+void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int SSR_ON)
 {
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -141,6 +174,7 @@ void Scene::render(glm::mat4 view, glm::mat4 projection)
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // reset viewport
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -157,10 +191,34 @@ void Scene::render(glm::mat4 view, glm::mat4 projection)
         model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);        
         model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
         PBR_shader.use();
+        PBR_shader.setVec3("viewPos", viewPos);
         PBR_shader.setMat4("model", model);
         PBR_shader.setMat4("projection", projection);
         PBR_shader.setMat4("view", view);
         PBR_shader.setFloat("far_plane", far);
         worldModel.model.Draw(PBR_shader);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthBuffer);
+
+    // render the loaded model
+    for (auto& worldModel : models) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);
+        model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
+        SSR_shader.use();
+        SSR_shader.setVec3("viewPos", viewPos);
+        SSR_shader.setMat4("model", model);
+        SSR_shader.setMat4("projection", projection);
+        SSR_shader.setMat4("view", view);
+        SSR_shader.setInt("SSR_ON", SSR_ON);
+        worldModel.model.Draw(SSR_shader);
     }
 }

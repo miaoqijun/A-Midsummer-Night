@@ -24,7 +24,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, int &SSR_ON);
 
 // camera
 Camera camera(glm::vec3(0.0f, 2.0f, 5.0f));
@@ -88,6 +88,7 @@ int main()
 
     // render loop
     // -----------
+    int SSR_ON = 0;
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
@@ -98,7 +99,7 @@ int main()
 
         // input
         // -----
-        processInput(window);
+        processInput(window, SSR_ON);
 
         // render
         // ------
@@ -107,7 +108,7 @@ int main()
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        scene.render(view, projection);
+        scene.render(camera.Position, view, projection, SSR_ON);
         skybox.render(glm::mat4(glm::mat3(view)), projection);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -124,8 +125,9 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, int &SSR_ON)
 {
+    static double last_change = 0.0;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -137,6 +139,14 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        double now = glfwGetTime();
+        if (now - last_change >= 0.2) {
+            last_change = now;
+            SSR_ON = 1 - SSR_ON;
+        }
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
