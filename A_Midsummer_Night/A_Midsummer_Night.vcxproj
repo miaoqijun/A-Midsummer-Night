@@ -139,11 +139,15 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="particle.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="particle_fs.glsl" />
+    <None Include="particle_gs.glsl" />
+    <None Include="particle_vs.glsl" />
     <None Include="PBR_fs.glsl" />
     <None Include="PBR_vs.glsl" />
     <None Include="point_shadows_fs.glsl" />
@@ -157,6 +161,7 @@
     <None Include="SSR_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="particle.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="skybox.h" />
   </ItemGroup>

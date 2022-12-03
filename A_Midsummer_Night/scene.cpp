@@ -75,7 +75,6 @@ Scene::Scene()
 
 void Scene::load_models()
 {
-    const float all_scale = 1.0;
     WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
         glm::vec3(0.3f, 0.3f, 0.3f),
@@ -85,14 +84,14 @@ void Scene::load_models()
     };
     models.push_back(house);
 
-    WorldModel ground = {
-        glm::vec3(0.0f, -2.0f, 0.0f),
-        glm::vec3(0.5f, 0.5f, 0.5f),
-        glm::radians(0.0f),
-        glm::vec3(0.1f, 0.0f, 0.0f),
-        Model("../resources/objects/Ground/Ground.obj")
-    };
-    models.push_back(ground);
+    //WorldModel ground = {
+    //    glm::vec3(0.0f, -2.0f, 0.0f),
+    //    glm::vec3(0.5f, 0.5f, 0.5f),
+    //    glm::radians(0.0f),
+    //    glm::vec3(0.1f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Ground/Ground.obj")
+    //};
+    //models.push_back(ground);
 
     WorldModel table = {
         glm::vec3(-0.8f, 0.1f, 3.5f),
@@ -132,12 +131,9 @@ void Scene::load_models()
         Model("../resources/objects/Sofa/sofa.obj")
     };
     models.push_back(sofa);
-    for (int i = 0; i < models.size(); i++) {
-        models[i].scale *= all_scale;
-    }
 }
 
-void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON)
+void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime)
 {
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -225,4 +221,7 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         SSR_shader.setBool("SSR_ON", SSR_ON);
         worldModel.model.Draw(SSR_shader);
     }
+    
+    Particle.Update(delatTime);
+    Particle.Draw(projection, view, viewPos);
 }

@@ -30,6 +30,9 @@
     <ClCompile Include="model.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="point_shadows_fs.glsl">
@@ -61,12 +64,24 @@
     </None>
     <None Include="SSR_fs.glsl" />
     <None Include="SSR_vs.glsl" />
+    <None Include="particle_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="particle_gs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="particle_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="skybox.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
