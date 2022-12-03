@@ -90,6 +90,7 @@ int main()
     // -----------
     int shadow_mode = 2;
     bool SSR_test = false, SSR_ON = false;
+
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
@@ -109,9 +110,9 @@ int main()
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        scene.render(camera.Position, view, projection, shadow_mode, SSR_test, SSR_ON);
+        scene.render(camera.Position, view, projection, shadow_mode, SSR_test, SSR_ON, deltaTime);
         skybox.render(glm::mat4(glm::mat3(view)), projection);
-
+        
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
