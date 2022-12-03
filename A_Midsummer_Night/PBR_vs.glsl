@@ -5,7 +5,7 @@ layout (location = 2) in vec2 texCoords;
 layout (location = 3) in vec3 tangent;
 layout (location = 4) in vec3 bitangent;
 
-#define NR_POINT_LIGHTS 2
+#define NR_POINT_LIGHTS 3
 
 out VS_OUT {
     vec3 FragPos;

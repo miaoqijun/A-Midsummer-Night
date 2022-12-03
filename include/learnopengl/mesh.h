@@ -70,7 +70,7 @@ public:
         unsigned int emissiveNr = 1;
         for (unsigned int i = 0; i < textures.size(); i++)
         {
-            glActiveTexture(GL_TEXTURE0 + (i + 2)); // active proper texture unit before binding
+            glActiveTexture(GL_TEXTURE0 + (i + 5)); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
             string number;
             string name = textures[i].type;
@@ -87,7 +87,7 @@ public:
             else if (name == "texture_emissive")
                 number = std::to_string(emissiveNr++); // transfer unsigned int to string
             // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shader.ID, ("material." + name + number).c_str()), i + 2);
+            glUniform1i(glGetUniformLocation(shader.ID, ("material." + name + number).c_str()), i + 5);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }

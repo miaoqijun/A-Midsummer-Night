@@ -66,8 +66,7 @@ ParticleGenerator::ParticleGenerator()
 }
 void ParticleGenerator::Update(GLfloat dt)
 {
-    int n = int(dt * 1000);
-    for (GLuint i = 0; i < n; i++)
+    for (GLuint i = 0; i < int(dt * 1000); i++)
     {
         int unusedParticle = firstUnusedParticle();
         respawnParticle(particles[unusedParticle]);
@@ -87,26 +86,39 @@ void ParticleGenerator::Update(GLfloat dt)
             p.size = factor * INIT_SIZE * 0.1f;
         }
     }
-}
-void ParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 viewPos)
-{
-    glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-    std::vector<float> vertices;
+
     float sum_coord[3] = {};
     int n = 0;
     for (Particle particle : particles)
     {
         if (particle.Age < particle.Life)
         {
-            vertices.push_back(particle.Position.x);
             sum_coord[0] += particle.Position.x;
-            vertices.push_back(particle.Position.y);
             sum_coord[1] += particle.Position.y;
-            vertices.push_back(particle.Position.z);
             sum_coord[2] += particle.Position.z;
+            n++;
+        }
+    }
+    sum_coord[0] /= n;
+    sum_coord[1] /= n;
+    sum_coord[2] /= n;
+    avg_coord = glm::vec3(sum_coord[0] / n, sum_coord[1] / n, sum_coord[2] / n);
+}
+void ParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 viewPos)
+{
+    glEnable(GL_BLEND);
+    glDepthFunc(GL_ALWAYS);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    vertices.clear();
+    for (Particle particle : particles)
+    {
+        if (particle.Age < particle.Life)
+        {
+            vertices.push_back(particle.Position.x);
+            vertices.push_back(particle.Position.y);
+            vertices.push_back(particle.Position.z);
             vertices.push_back(particle.Color.x);
             vertices.push_back(particle.Color.y);
             vertices.push_back(particle.Color.z);
@@ -116,13 +128,8 @@ void ParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 vie
                 vertices.push_back(0.5);
             else
                 vertices.push_back(1.5);
-            n++;
         }
     }
-    sum_coord[0] /= n;
-    sum_coord[1] /= n;
-    sum_coord[2] /= n;
-    avg_coord = glm::vec3(sum_coord[0] / n, sum_coord[1] / n, sum_coord[2] / n);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -157,7 +164,7 @@ void ParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 vie
     glDrawArrays(GL_POINTS, 0, vertices.size() / 8);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
 
     glDeleteVertexArrays(1, &VAO);
@@ -212,4 +219,9 @@ void ParticleGenerator::init()
 {
     for (GLuint i = 0; i < this->amount; i++)
         this->particles.push_back(Particle());
+}
+
+glm::vec3 ParticleGenerator::get_light_position()
+{
+    return position + glm::vec3(avg_coord.x * 40.0f, avg_coord.y, avg_coord.z * 40.0f);
 }

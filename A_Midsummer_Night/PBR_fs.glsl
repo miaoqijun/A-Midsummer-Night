@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-#define NR_POINT_LIGHTS 2
+#define NR_POINT_LIGHTS 3
 
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 uniform bool SSR_test;
@@ -268,7 +268,7 @@ void main()
     }   
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.01) * albedo * ao;
     float emissive = texture(material.texture_emissive1, fs_in.TexCoords).r;
     vec3 color = Lo + vec3(emissive);
     if(!SSR_test)

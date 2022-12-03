@@ -135,13 +135,19 @@ void Scene::load_models()
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime)
 {
+    Particle.Update(delatTime);
+    PBR_shader.use();
+    PBR_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", Particle.get_light_position());
+    //glm::vec3 pos = Particle.get_light_position();
+    //std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
     GLfloat near = 1.0f;
     GLfloat far = 25.0f;
     glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
-    std::vector<glm::mat4> shadowTransforms[3];
-
+    std::vector<glm::mat4> shadowTransforms[POINT_LIGHT_NUM];
+    
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {
         shadowTransforms[i].push_back(shadowProj * glm::lookAt(point_lights[i].position, point_lights[i].position + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
         shadowTransforms[i].push_back(shadowProj * glm::lookAt(point_lights[i].position, point_lights[i].position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
@@ -201,6 +207,8 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    Particle.Draw(projection, view, viewPos);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE1);
@@ -221,7 +229,4 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         SSR_shader.setBool("SSR_ON", SSR_ON);
         worldModel.model.Draw(SSR_shader);
     }
-    
-    Particle.Update(delatTime);
-    Particle.Draw(projection, view, viewPos);
 }

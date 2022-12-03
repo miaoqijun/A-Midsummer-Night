@@ -12,7 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define POINT_LIGHT_NUM 2
+#define POINT_LIGHT_NUM 3
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 960;
@@ -45,10 +45,14 @@ private:
         glm::vec3(-2.9f, 2.0f, -1.0f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 1.0f, 1.0f),
         1.0f, 0.09f, 0.032f,
         glm::vec3(-2.9f, 2.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 1.0f, 1.0f),
-        1.0f, 0.09f, 0.032f
+        1.0f, 0.09f, 0.032f,
+        glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f),
+        1.0f, 0.09f, 0.032f,
     };
+    PointLight fire = { glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f),
+        1.0f, 0.09f, 0.032f };
     std::vector<WorldModel> models;
-    const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    const GLuint SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
     GLuint depthMapFBO[POINT_LIGHT_NUM], depthCubemap[POINT_LIGHT_NUM];
     unsigned int framebuffer, textureColorbuffer, depthBuffer;
     ParticleGenerator Particle;

@@ -4,9 +4,7 @@ layout (location = 0) in vec3 Position;
 layout (location = 1) in vec4 Color;
 layout (location = 2) in float scale;
 layout (location = 3) in float choice;
-uniform mat4 projection; 
-uniform mat4 view; 
-uniform mat4 model; 
+
 out GS_OUT
 {
     vec4 ourColor;

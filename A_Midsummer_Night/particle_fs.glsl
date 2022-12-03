@@ -12,7 +12,11 @@ void main()
 {     
     vec4 texColor;
     if(fchoice > 0.5)
-        FragColor = texture(flame, TexCoord) * fColor; 
+        texColor = texture(flame, TexCoord) * fColor; 
     else
-        FragColor = texture(Round, TexCoord) * fColor;     
+        texColor = texture(Round, TexCoord) * fColor;     
+
+    if(texColor.r + texColor.g + texColor.b < 0.1)
+        discard;
+    FragColor = texColor;
 }

@@ -16,8 +16,8 @@ const glm::vec3 MaxVeloc(0.0f, 10.0f, 0.0f);
 const glm::vec3 MinVeloc(0.0f, 5.0f, 0.0f);
 const glm::vec3 ACC_SPEED(0.0, 0.08f, 0.0);
 const glm::vec4 INIT_COLOR(0.5f, 0.3f, 0.1f, 1.0f);
-const float MAX_LIFE = 0.4f;
-const float MIN_LIFE = 0.3f;
+const float MAX_LIFE = 0.7f;
+const float MIN_LIFE = 0.6f;
 const float ALPHA = 1.0f;
 const int NEW_PARTICLES = 5;
 
@@ -35,7 +35,7 @@ public:
     ParticleGenerator();
     void Update(GLfloat dt);
     void Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 viewPos);
-    glm::vec3 avg_coord;
+    glm::vec3 get_light_position();
 private:
     // State  
     const char* vs_path = "particle_vs.glsl";
@@ -43,7 +43,8 @@ private:
     const char* fs_path = "particle_fs.glsl";
     std::vector<Particle> particles;
     const GLuint amount = 70000;
-
+    glm::vec3 avg_coord;
+    std::vector<float> vertices;
     Shader shader;
     GLuint lastUsedParticle;
     GLuint VAO;
