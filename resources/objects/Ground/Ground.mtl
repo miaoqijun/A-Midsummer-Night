@@ -1,0 +1,8 @@
+newmtl Ground
+illum 2
+map_Ka Textures\White_AmbientOcclusion.jpg
+map_Kd Textures\SM_Prop_Grass_1001_BaseColor.png
+map_Ks Textures\SM_Prop_Grass_1001_Roughness.png
+map_Ns Textures\SM_Prop_Grass_1001_Metallic.png
+map_Kn Textures\SM_Prop_Grass_1001_Normal.png
+map_Ke Textures\Black_Emissive.jpg

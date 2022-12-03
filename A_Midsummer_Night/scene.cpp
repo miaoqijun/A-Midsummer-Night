@@ -85,14 +85,14 @@ void Scene::load_models()
     };
     models.push_back(house);
 
-    WorldModel grass = {
-        glm::vec3(0.0f, 0.1f, 0.0f),
-        glm::vec3(10.0f, 10.0f, 10.0f),
+    WorldModel ground = {
+        glm::vec3(0.0f, -2.0f, 0.0f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
         glm::radians(0.0f),
         glm::vec3(0.1f, 0.0f, 0.0f),
-        Model("../resources/objects/Grass/SM_Prop_Grass.obj")
+        Model("../resources/objects/Ground/Ground.obj")
     };
-    models.push_back(grass);
+    models.push_back(ground);
 
     WorldModel table = {
         glm::vec3(-0.8f, 0.1f, 3.5f),
