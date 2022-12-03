@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 
 Scene::Scene()
 {
@@ -137,7 +137,7 @@ void Scene::load_models()
     }
 }
 
-void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int SSR_ON)
+void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON)
 {
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -163,6 +163,7 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
             glUniformMatrix4fv(glGetUniformLocation(depth_shader.ID, ("shadowMatrices[" + std::to_string(j) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(shadowTransforms[i][j]));
         glUniform1f(glGetUniformLocation(depth_shader.ID, "far_plane"), far);
         glUniform3fv(glGetUniformLocation(depth_shader.ID, "lightPos"), 1, &point_lights[i].position[0]);
+        //models
         for (auto& worldModel : models) {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene       
@@ -171,7 +172,6 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
             depth_shader.setMat4("model", model);
             worldModel.model.Draw(depth_shader);
         }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -191,6 +191,8 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);        
         model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
         PBR_shader.use();
+        PBR_shader.setInt("shadow_mode", shadow_mode);
+        PBR_shader.setBool("SSR_test", SSR_test);
         PBR_shader.setVec3("viewPos", viewPos);
         PBR_shader.setMat4("model", model);
         PBR_shader.setMat4("projection", projection);
@@ -198,6 +200,7 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         PBR_shader.setFloat("far_plane", far);
         worldModel.model.Draw(PBR_shader);
     }
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -218,7 +221,8 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         SSR_shader.setMat4("model", model);
         SSR_shader.setMat4("projection", projection);
         SSR_shader.setMat4("view", view);
-        SSR_shader.setInt("SSR_ON", SSR_ON);
+        SSR_shader.setBool("SSR_test", SSR_test);
+        SSR_shader.setBool("SSR_ON", SSR_ON);
         worldModel.model.Draw(SSR_shader);
     }
 }

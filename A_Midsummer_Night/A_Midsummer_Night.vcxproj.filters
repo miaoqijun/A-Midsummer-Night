@@ -59,6 +59,8 @@
     <None Include="PBR_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="SSR_fs.glsl" />
+    <None Include="SSR_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="skybox.h">

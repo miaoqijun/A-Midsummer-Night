@@ -4,14 +4,17 @@
 #include <string>
 #include <vector>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #define POINT_LIGHT_NUM 2
 
-const unsigned int SCR_WIDTH = 1200;
-const unsigned int SCR_HEIGHT = 800;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 960;
 
 // 世界坐标&模型
 struct WorldModel {
@@ -47,7 +50,8 @@ private:
     GLuint depthMapFBO[POINT_LIGHT_NUM], depthCubemap[POINT_LIGHT_NUM];
     unsigned int framebuffer, textureColorbuffer, depthBuffer;
     void load_models();
+
 public:
 	Scene();
-    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int SSR_ON);
+    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON);
 };

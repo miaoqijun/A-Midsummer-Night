@@ -4,6 +4,8 @@ out vec4 FragColor;
 #define NR_POINT_LIGHTS 2
 
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
+uniform bool SSR_test;
+uniform int shadow_mode;
 
 struct Material {
     sampler2D texture_albedo1;
@@ -76,14 +78,44 @@ void poissonDiskSamples( const in vec2 randomSeed ) {
 }
 
 void LocalBasis(vec3 n, out vec3 b1, out vec3 b2) {
-  float sign_ = sign(n.z);
-  if (n.z == 0.0) {
-    sign_ = 1.0;
-  }
-  float a = -1.0 / (sign_ + n.z);
-  float b = n.x * n.y * a;
-  b1 = vec3(1.0 + sign_ * n.x * n.x * a, sign_ * b, -sign_ * n.x);
-  b2 = vec3(b, sign_ + n.y * n.y * a, -n.y);
+    float sign_ = sign(n.z);
+    if (n.z == 0.0) {
+        sign_ = 1.0;
+    }
+    float a = -1.0 / (sign_ + n.z);
+    float b = n.x * n.y * a;
+    b1 = vec3(1.0 + sign_ * n.x * n.x * a, sign_ * b, -sign_ * n.x);
+    b2 = vec3(b, sign_ + n.y * n.y * a, -n.y);
+}
+
+float hard_shadow(int index) {
+    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
+    float cur_depth = length(fragToLight);
+    float shadow_depth = texture(depthMap[index], fragToLight).r;
+    shadow_depth *= far_plane;
+    return float(cur_depth < shadow_depth + EPS);
+}
+
+float PCF(int index) {
+    float Stride = 10.;
+    float shadowmapSize = 1024.;
+    float visibility = 0.;
+
+    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
+    float cur_depth = length(fragToLight);
+    vec3 n = normalize(fragToLight), b1, b2;
+    LocalBasis(n, b1, b2);
+    mat3 localToWorld = mat3(n, b1, b2);
+    poissonDiskSamples(fs_in.FragPos.xy);
+    for(int i = 0; i < NUM_SAMPLES; i++)
+        poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
+    for(int i = 0; i < NUM_SAMPLES; i++) {
+        float shadow_depth = texture(depthMap[index], fragToLight + poissonDisk_3d[i] * Stride / shadowmapSize).r;
+        shadow_depth *= far_plane;
+        float res = float(cur_depth < shadow_depth + EPS);
+        visibility += res;
+    }
+    return visibility / float(NUM_SAMPLES);
 }
 
 float PCSS(int index){
@@ -170,6 +202,15 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
+float visibility(int index) {
+    if(shadow_mode == 0)
+        return hard_shadow(index);
+    else if(shadow_mode == 1)
+        return PCF(index);
+    else
+        return PCSS(index);
+}
+
 // ----------------------------------------------------------------------------
 void main()
 {		
@@ -223,13 +264,15 @@ void main()
 
         // add to outgoing radiance Lo
 
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL * PCSS(i);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility(i);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
     vec3 ambient = vec3(0.03) * albedo * ao;
     float emissive = texture(material.texture_emissive1, fs_in.TexCoords).r;
     vec3 color = Lo + vec3(emissive);
+    if(!SSR_test)
+        color += ambient;
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));

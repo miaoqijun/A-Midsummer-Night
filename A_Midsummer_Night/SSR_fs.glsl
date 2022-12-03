@@ -12,7 +12,8 @@ struct Material {
 
 uniform Material material;
 uniform vec3 viewPos;
-uniform int SSR_ON;
+uniform bool SSR_ON;
+uniform bool SSR_test;
 
 in VS_OUT {
     vec3 FragPos;
@@ -252,7 +253,7 @@ void main() {
     vec2 uv = GetScreenCoordinate(fs_in.FragPos);
     L = texture(colorMap, uv).rgb;
 
-    if(SSR_ON == 1) {
+    if(SSR_test && SSR_ON) {
         vec3 L_in = vec3(0.0);
         for(int i = 0; i < SAMPLE_NUM; i++) {    
             vec3 normal = normalize(fs_in.Normal);
