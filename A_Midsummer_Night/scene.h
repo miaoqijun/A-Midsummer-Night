@@ -22,8 +22,8 @@ const unsigned int SCR_HEIGHT = 960;
 struct WorldModel {
     glm::vec3 position;
     glm::vec3 scale;
-    float angle;
-    glm::vec3 rotateAxis;
+    float angle[2];
+    glm::vec3 rotateAxis[2];
     Model model;
 };
 

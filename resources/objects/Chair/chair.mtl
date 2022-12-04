@@ -1,0 +1,7 @@
+newmtl Chair.001
+	map_Kd Textures/bruh_Chair.001_BaseColor.png
+	map_Ka Textures/White_AmbientOcclusion.jpg
+	map_Ks Textures/bruh_Chair.001_Roughness.png
+	map_Ns Textures/bruh_Chair.001_Metallic.png
+	map_Kn Textures/bruh_Chair.001_Normal.png
+	map_Ke Textures/Black_Emissive.jpg

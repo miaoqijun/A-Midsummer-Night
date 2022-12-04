@@ -223,5 +223,8 @@ void ParticleGenerator::init()
 
 glm::vec3 ParticleGenerator::get_light_position()
 {
-    return position + glm::vec3(avg_coord.x * 40.0f, avg_coord.y, avg_coord.z * 40.0f);
+    if (vertices.size() > 0)
+        return position + glm::vec3(avg_coord.x * 70.0f, avg_coord.y, avg_coord.z * 70.0f);
+    else
+        return position;
 }

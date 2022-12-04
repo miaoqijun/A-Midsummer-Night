@@ -78,8 +78,8 @@ void Scene::load_models()
     WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
         glm::vec3(0.3f, 0.3f, 0.3f),
-        glm::radians(-90.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::radians(-90.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/House/highpoly_town_house_01.obj")
     };
     models.push_back(house);
@@ -96,17 +96,26 @@ void Scene::load_models()
     WorldModel table = {
         glm::vec3(-0.8f, 0.1f, 3.5f),
         glm::vec3(0.2f, 0.2f, 0.2f),
-        glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::radians(0.0f), glm::radians(0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Table/table.obj")
     };
     models.push_back(table);
 
+    WorldModel chair = {
+        glm::vec3(0.0f, 0.4f, 3.5f),
+        glm::vec3(2.0f, 2.0f, 2.0f),
+        glm::radians(180.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Chair/chair.obj")
+    };
+    models.push_back(chair);
+
     WorldModel roadLamp = {
         glm::vec3(-3.0f, 0.1f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::radians(0.0f), glm::radians(0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/roadLamp/Street_lamp_1.obj")
     };
     roadLamp.position = glm::vec3(-3.0f, 0.1f, -1.0f);
@@ -117,8 +126,8 @@ void Scene::load_models()
     WorldModel mug = {
         glm::vec3(-1.0f, 0.63f, 3.5f),
         glm::vec3(0.06f, 0.06f, 0.06f),
-        glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::radians(0.0f), glm::radians(0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Mug/Mug.obj")
     };
     models.push_back(mug);
@@ -126,20 +135,44 @@ void Scene::load_models()
     WorldModel sofa = {
         glm::vec3(1.0f, 0.72f, 0.5f),
         glm::vec3(0.005f, 0.005f, 0.005f),
-        glm::radians(-90.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::radians(-90.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Sofa/sofa.obj")
     };
     models.push_back(sofa);
+
+    WorldModel carpet = {
+        glm::vec3(-0.8f, 0.72f, 0.0f),
+        glm::vec3(0.005f, 0.005f, 0.005f),
+        glm::radians(-90.0f), glm::radians(90.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+        Model("../resources/objects/Carpet/Carpet.obj")
+    };
+    models.push_back(carpet);
+
+    WorldModel gramophone = {
+        glm::vec3(-0.8f, 0.72f, 0.2f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::radians(-30.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Gramophone/gramophone.obj")
+    };
+    models.push_back(gramophone);
+
+    WorldModel teapot = {
+        glm::vec3(-0.8f, 0.72f, -0.3f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::radians(-90.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Teapot/teapot.obj")
+    };
+    models.push_back(teapot);
 }
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime)
 {
     Particle.Update(delatTime);
-    PBR_shader.use();
-    PBR_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", Particle.get_light_position());
-    //glm::vec3 pos = Particle.get_light_position();
-    //std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+    point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -168,8 +201,9 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         //models
         for (auto& worldModel : models) {
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene       
-            model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);            
+            model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene 
+            model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
+            model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
             model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
             depth_shader.setMat4("model", model);
             worldModel.model.Draw(depth_shader);
@@ -190,9 +224,11 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     for (auto& worldModel : models) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);        
+        model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
+        model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
         model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
         PBR_shader.use();
+        PBR_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
         PBR_shader.setInt("shadow_mode", shadow_mode);
         PBR_shader.setBool("SSR_test", SSR_test);
         PBR_shader.setVec3("viewPos", viewPos);
@@ -218,7 +254,8 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     for (auto& worldModel : models) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, worldModel.angle, worldModel.rotateAxis);
+        model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
+        model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
         model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
         SSR_shader.use();
         SSR_shader.setVec3("viewPos", viewPos);
