@@ -40,7 +40,7 @@ ParticleGenerator::ParticleGenerator()
     int n = 10;
     float Adj_value = 0.05f;
     float radius = 0.7f;//火焰地区半径
-    for (int i = 0; i < amount; i++)
+    for (unsigned int i = 0; i < amount; i++)
     {
         glm::vec3 record(0.0f);
         for (int j = 0; j < n; j++) //模拟高斯分布计算粒子位置
@@ -66,7 +66,7 @@ ParticleGenerator::ParticleGenerator()
 }
 void ParticleGenerator::Update(GLfloat dt)
 {
-    for (GLuint i = 0; i < int(dt * 1000); i++)
+    for (GLuint i = 0; i < unsigned int(dt * 1000); i++)
     {
         int unusedParticle = firstUnusedParticle();
         respawnParticle(particles[unusedParticle]);
@@ -161,7 +161,7 @@ void ParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view, glm::vec3 vie
     glBindTexture(GL_TEXTURE_2D, texture1);
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_POINTS, 0, vertices.size() / 8);
+    glDrawArrays(GL_POINTS, 0, GLsizei(vertices.size()) / 8);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LESS);
@@ -224,7 +224,7 @@ void ParticleGenerator::init()
 glm::vec3 ParticleGenerator::get_light_position()
 {
     if (vertices.size() > 0)
-        return position + glm::vec3(avg_coord.x * 70.0f, avg_coord.y, avg_coord.z * 70.0f);
+        return position + glm::vec3(avg_coord.x * 200.0f, avg_coord.y, avg_coord.z * 200.0f);
     else
         return position;
 }
