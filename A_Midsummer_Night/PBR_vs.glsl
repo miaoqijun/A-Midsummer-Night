@@ -42,8 +42,11 @@ void main()
     
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     vec3 T = normalize(normalMatrix * tangent);
-    vec3 B = normalize(normalMatrix * bitangent);
     vec3 N = normalize(normalMatrix * normal);    
+    // re-orthogonalize T with respect to N
+    T = normalize(T - dot(T, N) * N);
+    // then retrieve perpendicular vector B with the cross product of T and N
+    vec3 B = cross(T, N);
     
     mat3 TBN = transpose(mat3(T, B, N));  
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
