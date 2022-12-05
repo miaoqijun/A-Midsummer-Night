@@ -173,10 +173,11 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
 {
     Particle.Update(delatTime);
     point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
+    //std::cout << point_lights[POINT_LIGHT_NUM - 1].position.x << " " << point_lights[POINT_LIGHT_NUM - 1].position.y << " " << point_lights[POINT_LIGHT_NUM - 1].position.z << std::endl;
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
-    GLfloat near = 1.0f;
+    GLfloat near = 0.1f;
     GLfloat far = 25.0f;
     glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
     std::vector<glm::mat4> shadowTransforms[POINT_LIGHT_NUM];

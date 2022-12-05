@@ -10,12 +10,19 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Textures\\WoodQuarteredChiffon001_COL_3K.jpg
-map_Ks Textures\\WoodQuarteredChiffon001_GLOSS_3K.jpg
-map_Kn Textures\\WoodQuarteredChiffon001_NRM_3K.jpg
-map_Ka Textures\\White_AmbientOcclusion.jpg
-map_Ns Textures\\WoodQuarteredChiffon001_REFL_3K.jpg
-map_Ke Textures\\Black_Emissive.jpg
+# map_Kd Textures\\WoodQuarteredChiffon001_COL_3K.jpg
+# map_Ks Textures\\WoodQuarteredChiffon001_GLOSS_3K.jpg
+# map_Kn Textures\\WoodQuarteredChiffon001_NRM_3K.jpg
+# map_Ka Textures\\White_AmbientOcclusion.jpg
+# map_Ns Textures\\WoodQuarteredChiffon001_REFL_3K.jpg
+# map_Ke Textures\\Black_Emissive.jpg
+
+map_Kd Wood076_2K-PNG\\Wood076_2K_Color.png
+map_Ks Wood076_2K-PNG\\Wood076_2K_Roughness.png
+map_Kn Wood076_2K-PNG\\Wood076_2K_NormalGL.png
+map_Ka Wood076_2K-PNG\\Wood076_2K_AmbientOcclusion.png
+map_Ns Wood076_2K-PNG\\Black_Metalness.jpg
+map_Ke Wood076_2K-PNG\\Black_Emissive.jpg
 
 newmtl Material.002
 Ns 225.000000
