@@ -161,6 +161,7 @@
     <None Include="SSR_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="config.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="skybox.h" />

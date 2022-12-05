@@ -12,11 +12,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "config.h"
+
 #define POINT_LIGHT_NUM 3
-
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 960;
-
 
 // 世界坐标&模型
 struct WorldModel {

@@ -1,7 +1,4 @@
-﻿#define WINDOW_X_POS 50
-#define WINDOW_Y_POS 50
-
-#include <glad/glad.h>
+﻿#include <glad/glad.h>
 
 #include <GLFW/glfw3.h>
 
