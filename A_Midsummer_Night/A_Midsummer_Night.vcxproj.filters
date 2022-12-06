@@ -33,6 +33,9 @@
     <ClCompile Include="particle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="water.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="point_shadows_fs.glsl">
@@ -77,6 +80,12 @@
     <None Include="SSR_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="water_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="water_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="skybox.h">
@@ -89,6 +98,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="water.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
