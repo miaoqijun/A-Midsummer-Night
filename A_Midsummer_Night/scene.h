@@ -7,6 +7,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "particle.h"
+#include "water.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -54,9 +55,10 @@ private:
     GLuint depthMapFBO[POINT_LIGHT_NUM], depthCubemap[POINT_LIGHT_NUM];
     unsigned int framebuffer, textureColorbuffer, depthBuffer;
     ParticleGenerator Particle;
+    Water water;
     void load_models();
 
 public:
 	Scene();
-    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delattime);
+    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delattime, float totalTime);
 };

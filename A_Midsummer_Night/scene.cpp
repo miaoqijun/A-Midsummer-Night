@@ -75,25 +75,25 @@ Scene::Scene()
 
 void Scene::load_models()
 {
-    WorldModel house = {
+    /*WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
         glm::vec3(0.3f, 0.3f, 0.3f),
         glm::radians(-90.0f), glm::radians(0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/House/highpoly_town_house_01.obj")
     };
-    models.push_back(house);
+    models.push_back(house);*/
 
-    //WorldModel ground = {
-    //    glm::vec3(0.0f, -2.0f, 0.0f),
-    //    glm::vec3(0.5f, 0.5f, 0.5f),
-    //    glm::radians(0.0f),
-    //    glm::vec3(0.1f, 0.0f, 0.0f),
-    //    Model("../resources/objects/Ground/Ground.obj")
-    //};
-    //models.push_back(ground);
+    WorldModel ground = {
+        glm::vec3(0.0f, -2.0f, 0.0f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::radians(0.0f), glm::radians(0.0f),
+        glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Ground/Ground.obj")
+    };
+    models.push_back(ground);
 
-    WorldModel table = {
+   /* WorldModel table = {
         glm::vec3(-0.8f, 0.1f, 3.5f),
         glm::vec3(0.2f, 0.2f, 0.2f),
         glm::radians(0.0f), glm::radians(0.0f),
@@ -166,10 +166,10 @@ void Scene::load_models()
         glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Teapot/teapot.obj")
     };
-    models.push_back(teapot);
+    models.push_back(teapot);*/
 }
 
-void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime)
+void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime, float totalTime)
 {
     Particle.Update(delatTime);
     point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
@@ -267,4 +267,6 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         SSR_shader.setBool("SSR_ON", SSR_ON);
         worldModel.model.Draw(SSR_shader);
     }
+
+    water.render(view, projection, totalTime);
 }
