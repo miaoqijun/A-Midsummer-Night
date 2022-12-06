@@ -143,6 +143,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="particle_fs.glsl" />
@@ -159,12 +160,15 @@
     <None Include="skybox_vs.glsl" />
     <None Include="SSR_fs.glsl" />
     <None Include="SSR_vs.glsl" />
+    <None Include="water_fs.glsl" />
+    <None Include="water_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="skybox.h" />
+    <ClInclude Include="water.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
