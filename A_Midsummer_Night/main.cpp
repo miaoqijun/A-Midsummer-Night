@@ -88,6 +88,8 @@ int main()
     int shadow_mode = 2;
     bool SSR_test = false, SSR_ON = false;
 
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic

@@ -62,8 +62,6 @@
     <None Include="PBR_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="SSR_fs.glsl" />
-    <None Include="SSR_vs.glsl" />
     <None Include="particle_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
@@ -71,6 +69,12 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="particle_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="SSR_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="SSR_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
