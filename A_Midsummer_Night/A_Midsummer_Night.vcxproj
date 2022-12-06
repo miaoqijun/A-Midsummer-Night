@@ -161,6 +161,7 @@
     <None Include="SSR_fs.glsl" />
     <None Include="SSR_vs.glsl" />
     <None Include="water_fs.glsl" />
+    <None Include="water_gs.glsl" />
     <None Include="water_vs.glsl" />
   </ItemGroup>
   <ItemGroup>

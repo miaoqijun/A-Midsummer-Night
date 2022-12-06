@@ -41,12 +41,25 @@ Scene::Scene()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         PBR_shader.use();
         PBR_shader.setInt("depthMap[" + to_string(i) + "]", i);
+        /*water.water_shader.use();
+        water.water_shader.setInt("depthMap[" + to_string(i) + "]", i);*/
     }
 
     SSR_shader = Shader(SSR_vs_path, SSR_fs_path);
     SSR_shader.use();
     SSR_shader.setInt("colorMap", 0);
     SSR_shader.setInt("depthMap", 1);
+
+    water.water_shader.use();
+    for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+        water.water_shader.setVec3("pointLights[" + to_string(i) + "].position", point_lights[i].position);
+        water.water_shader.setVec3("pointLights[" + to_string(i) + "].ambient", point_lights[i].ambient);
+        water.water_shader.setVec3("pointLights[" + to_string(i) + "].diffuse", point_lights[i].diffuse);
+        water.water_shader.setVec3("pointLights[" + to_string(i) + "].specular", point_lights[i].specular);
+        water.water_shader.setFloat("pointLights[" + to_string(i) + "].constant", point_lights[i].constant);
+        water.water_shader.setFloat("pointLights[" + to_string(i) + "].linear", point_lights[i].linear);
+        water.water_shader.setFloat("pointLights[" + to_string(i) + "].quadratic", point_lights[i].quadratic);
+    }
 
     // framebuffer configuration
     // -------------------------
@@ -75,25 +88,25 @@ Scene::Scene()
 
 void Scene::load_models()
 {
-    /*WorldModel house = {
+    WorldModel house = {
         glm::vec3(0.0f, 0.1f, 0.0f),
         glm::vec3(0.3f, 0.3f, 0.3f),
         glm::radians(-90.0f), glm::radians(0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/House/highpoly_town_house_01.obj")
     };
-    models.push_back(house);*/
+    models.push_back(house);
 
     WorldModel ground = {
-        glm::vec3(0.0f, -2.0f, 0.0f),
+        glm::vec3(0.0f, -1.75f, 0.0f),
         glm::vec3(0.5f, 0.5f, 0.5f),
-        glm::radians(0.0f), glm::radians(0.0f),
-        glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::radians(180.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Ground/Ground.obj")
     };
     models.push_back(ground);
 
-   /* WorldModel table = {
+    WorldModel table = {
         glm::vec3(-0.8f, 0.1f, 3.5f),
         glm::vec3(0.2f, 0.2f, 0.2f),
         glm::radians(0.0f), glm::radians(0.0f),
@@ -118,9 +131,9 @@ void Scene::load_models()
         glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/roadLamp/Street_lamp_1.obj")
     };
-    roadLamp.position = glm::vec3(-3.0f, 0.1f, -1.0f);
+    roadLamp.position = glm::vec3(-3.0f, 0.1f, 0.0f);
     models.push_back(roadLamp);
-    roadLamp.position = glm::vec3(-3.0f, 0.1f, 1.0f);
+    roadLamp.position = glm::vec3(1.5f, 0.1f, 2.5f);
     models.push_back(roadLamp);
 
     WorldModel mug = {
@@ -166,14 +179,13 @@ void Scene::load_models()
         glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         Model("../resources/objects/Teapot/teapot.obj")
     };
-    models.push_back(teapot);*/
+    models.push_back(teapot);
 }
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime, float totalTime)
 {
     Particle.Update(delatTime);
     point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
-    //std::cout << point_lights[POINT_LIGHT_NUM - 1].position.x << " " << point_lights[POINT_LIGHT_NUM - 1].position.y << " " << point_lights[POINT_LIGHT_NUM - 1].position.z << std::endl;
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -200,14 +212,16 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         glUniform1f(glGetUniformLocation(depth_shader.ID, "far_plane"), far);
         glUniform3fv(glGetUniformLocation(depth_shader.ID, "lightPos"), 1, &point_lights[i].position[0]);
         //models
-        for (auto& worldModel : models) {
+        for (int j = 0; j < models.size(); j++) {
+            if ((i == 0 && j == 4) || (i == 1 && j == 5))   //skip lightsource itself when rendering shadow map
+                continue;
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene 
-            model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
-            model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
-            model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
+            model = glm::translate(model, models[j].position); // translate it down so it's at the center of the scene 
+            model = glm::rotate(model, models[j].angle[1], models[j].rotateAxis[1]);
+            model = glm::rotate(model, models[j].angle[0], models[j].rotateAxis[0]);
+            model = glm::scale(model, models[j].scale);	// it's a bit too big for our scene, so scale it down
             depth_shader.setMat4("model", model);
-            worldModel.model.Draw(depth_shader);
+            models[j].model.Draw(depth_shader);
         }
     }
 
@@ -268,5 +282,10 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         worldModel.model.Draw(SSR_shader);
     }
 
+    water.water_shader.use();
+    water.water_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
+    water.water_shader.setInt("shadow_mode", shadow_mode);
+    water.water_shader.setVec3("viewPos", viewPos);
+    water.water_shader.setFloat("far_plane", far);
     water.render(view, projection, totalTime);
 }

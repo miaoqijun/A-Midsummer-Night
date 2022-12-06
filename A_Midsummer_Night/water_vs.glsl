@@ -3,6 +3,7 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
 
 out vec3 normal;
+out vec3 FragPos;
 out vec2 TexCoord;
 
 uniform mat4 model;
@@ -43,7 +44,8 @@ void main()
     normal = normalize(cross(binormal, tangent));
 
 	gl_Position = projection * view * model * vec4(aPos.x,height*0.5,aPos.z,1.0);
-	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+    FragPos = vec3(model * vec4(aPos.x, height*0.5, aPos.z, 1.0));
+	TexCoord = aTexCoord + vec2(time) / 5000.0f;
 }
 
 float Wave(vec3 positionOS, float amplitude, float speed, float waveLength, vec2 direction,float k)

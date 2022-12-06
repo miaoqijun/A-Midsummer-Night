@@ -4,9 +4,10 @@ Water::Water() {
     load_models();
 
     stbi_set_flip_vertically_on_load(true);
-    watermapTexture = loadmap(water_path, GL_REPEAT);
+    watermapTexture = loadmap(water_path, GL_MIRRORED_REPEAT);
+    stbi_set_flip_vertically_on_load(false);
     water_shader.use();
-    glUniform1i(glGetUniformLocation(water_shader.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(water_shader.ID, "texture1"), 5);
 }
 
 void Water::load_models()
@@ -27,8 +28,8 @@ void Water::load_models()
             //std::cout << vertices[pointer * 3] << " " << vertices[pointer * 3 + 1] << " " << vertices[pointer * 3 + 2] << " ";
 
             // 纹理坐标
-            vertices[pointer * 5 + 3] = (float)j / 50;
-            vertices[pointer * 5 + 4] = (float)i / 50;
+            vertices[pointer * 5 + 3] = (float)j / 10000;
+            vertices[pointer * 5 + 4] = (float)i / 10000;
 
             pointer++;
         }
@@ -76,8 +77,7 @@ void Water::render(glm::mat4 view, glm::mat4 projection,double time)
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // render grass
-    water_shader.use();
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, watermapTexture);
     model = glm::mat4(1.0f);
     model = glm::translate(model, position);
@@ -86,31 +86,46 @@ void Water::render(glm::mat4 view, glm::mat4 projection,double time)
     water_shader.setMat4("projection", projection);
     water_shader.setFloat("time", (float)time);
     glBindVertexArray(VAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1), GL_UNSIGNED_INT, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-unsigned int Water::loadmap(string path, unsigned int mode) {
+unsigned int Water::loadmap(string path, unsigned int mode)
+{
+    string filename = string(path);
+
     unsigned int textureID;
     glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+
+    int width, height, nrComponents;
+    unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
     }
-    stbi_image_free(data);
 
     return textureID;
 }

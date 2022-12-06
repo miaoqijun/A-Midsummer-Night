@@ -16,7 +16,7 @@ void main()
     else
         texColor = texture(Round, TexCoord) * fColor;     
 
-    if(texColor.r + texColor.g + texColor.b < 0.1)
+    if(texColor.r + texColor.g + texColor.b < 0.2)
         discard;
     FragColor = texColor;
 }
