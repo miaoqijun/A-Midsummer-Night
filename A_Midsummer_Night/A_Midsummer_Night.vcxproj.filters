@@ -89,6 +89,12 @@
     <None Include="water_gs.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="smoke_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="smoke_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="skybox.h">

@@ -97,95 +97,96 @@ void Scene::load_models()
     };
     models.push_back(house);
 
-    WorldModel ground = {
-        glm::vec3(0.0f, -1.75f, 0.0f),
-        glm::vec3(0.5f, 0.5f, 0.5f),
-        glm::radians(180.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Ground/Ground.obj")
-    };
-    models.push_back(ground);
+    //WorldModel ground = {
+    //    glm::vec3(0.0f, -1.75f, 0.0f),
+    //    glm::vec3(0.5f, 0.5f, 0.5f),
+    //    glm::radians(180.0f), glm::radians(0.0f),
+    //    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Ground/Ground.obj")
+    //};
+    //models.push_back(ground);
 
-    WorldModel table = {
-        glm::vec3(-0.8f, 0.1f, 3.5f),
-        glm::vec3(0.2f, 0.2f, 0.2f),
-        glm::radians(0.0f), glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Table/table.obj")
-    };
-    models.push_back(table);
+    //WorldModel table = {
+    //    glm::vec3(-0.8f, 0.1f, 3.5f),
+    //    glm::vec3(0.2f, 0.2f, 0.2f),
+    //    glm::radians(0.0f), glm::radians(0.0f),
+    //    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Table/table.obj")
+    //};
+    //models.push_back(table);
 
-    WorldModel chair = {
-        glm::vec3(0.0f, 0.4f, 3.5f),
-        glm::vec3(2.0f, 2.0f, 2.0f),
-        glm::radians(180.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Chair/chair.obj")
-    };
-    models.push_back(chair);
+    //WorldModel chair = {
+    //    glm::vec3(0.0f, 0.4f, 3.5f),
+    //    glm::vec3(2.0f, 2.0f, 2.0f),
+    //    glm::radians(180.0f), glm::radians(0.0f),
+    //    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Chair/chair.obj")
+    //};
+    //models.push_back(chair);
 
-    WorldModel roadLamp = {
-        glm::vec3(-3.0f, 0.1f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(0.0f), glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/roadLamp/Street_lamp_1.obj")
-    };
-    roadLamp.position = glm::vec3(-3.0f, 0.1f, 0.0f);
-    models.push_back(roadLamp);
-    roadLamp.position = glm::vec3(1.5f, 0.1f, 2.5f);
-    models.push_back(roadLamp);
+    //WorldModel roadLamp = {
+    //    glm::vec3(-3.0f, 0.1f, 0.0f),
+    //    glm::vec3(1.0f, 1.0f, 1.0f),
+    //    glm::radians(0.0f), glm::radians(0.0f),
+    //    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/roadLamp/Street_lamp_1.obj")
+    //};
+    //roadLamp.position = glm::vec3(-3.0f, 0.1f, 0.0f);
+    //models.push_back(roadLamp);
+    //roadLamp.position = glm::vec3(1.5f, 0.1f, 2.5f);
+    //models.push_back(roadLamp);
 
-    WorldModel mug = {
-        glm::vec3(-1.0f, 0.63f, 3.5f),
-        glm::vec3(0.06f, 0.06f, 0.06f),
-        glm::radians(0.0f), glm::radians(0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Mug/Mug.obj")
-    };
-    models.push_back(mug);
+    //WorldModel mug = {
+    //    glm::vec3(-1.0f, 0.63f, 3.5f),
+    //    glm::vec3(0.06f, 0.06f, 0.06f),
+    //    glm::radians(0.0f), glm::radians(0.0f),
+    //    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Mug/Mug.obj")
+    //};
+    //models.push_back(mug);
 
-    WorldModel sofa = {
-        glm::vec3(1.0f, 0.72f, 0.5f),
-        glm::vec3(0.005f, 0.005f, 0.005f),
-        glm::radians(-90.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Sofa/sofa.obj")
-    };
-    models.push_back(sofa);
+    //WorldModel sofa = {
+    //    glm::vec3(1.0f, 0.72f, 0.5f),
+    //    glm::vec3(0.005f, 0.005f, 0.005f),
+    //    glm::radians(-90.0f), glm::radians(0.0f),
+    //    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Sofa/sofa.obj")
+    //};
+    //models.push_back(sofa);
 
-    WorldModel carpet = {
-        glm::vec3(-0.8f, 0.72f, 0.0f),
-        glm::vec3(0.005f, 0.005f, 0.005f),
-        glm::radians(-90.0f), glm::radians(90.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
-        Model("../resources/objects/Carpet/Carpet.obj")
-    };
-    models.push_back(carpet);
+    //WorldModel carpet = {
+    //    glm::vec3(-0.8f, 0.72f, 0.0f),
+    //    glm::vec3(0.005f, 0.005f, 0.005f),
+    //    glm::radians(-90.0f), glm::radians(90.0f),
+    //    glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+    //    Model("../resources/objects/Carpet/Carpet.obj")
+    //};
+    //models.push_back(carpet);
 
-    WorldModel gramophone = {
-        glm::vec3(-0.8f, 0.72f, 0.2f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(-30.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Gramophone/gramophone.obj")
-    };
-    models.push_back(gramophone);
+    //WorldModel gramophone = {
+    //    glm::vec3(-0.8f, 0.72f, 0.2f),
+    //    glm::vec3(1.0f, 1.0f, 1.0f),
+    //    glm::radians(-30.0f), glm::radians(0.0f),
+    //    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Gramophone/gramophone.obj")
+    //};
+    //models.push_back(gramophone);
 
-    WorldModel teapot = {
-        glm::vec3(-0.8f, 0.72f, -0.3f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(-90.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Teapot/teapot.obj")
-    };
-    models.push_back(teapot);
+    //WorldModel teapot = {
+    //    glm::vec3(-0.8f, 0.72f, -0.3f),
+    //    glm::vec3(1.0f, 1.0f, 1.0f),
+    //    glm::radians(-90.0f), glm::radians(0.0f),
+    //    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+    //    Model("../resources/objects/Teapot/teapot.obj")
+    //};
+    //models.push_back(teapot);
 }
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime, float totalTime)
 {
-    Particle.Update(delatTime);
-    point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
+    FireParticle.Update(delatTime);
+    SmokeParticle.Update(delatTime / 8);
+    point_lights[POINT_LIGHT_NUM - 1].position = FireParticle.get_light_position();
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -257,9 +258,9 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    Particle.Draw(projection, view, viewPos);
-
+    
+    FireParticle.Draw(projection, view, viewPos);
+    SmokeParticle.Draw(projection, view);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE1);
@@ -282,10 +283,10 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         worldModel.model.Draw(SSR_shader);
     }
 
-    water.water_shader.use();
-    water.water_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
-    water.water_shader.setInt("shadow_mode", shadow_mode);
-    water.water_shader.setVec3("viewPos", viewPos);
-    water.water_shader.setFloat("far_plane", far);
-    water.render(view, projection, totalTime);
+    //water.water_shader.use();
+    //water.water_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
+    //water.water_shader.setInt("shadow_mode", shadow_mode);
+    //water.water_shader.setVec3("viewPos", viewPos);
+    //water.water_shader.setFloat("far_plane", far);
+    //water.render(view, projection, totalTime);
 }
