@@ -12,5 +12,5 @@ void main()
 
 	texCoords = vec2(gl_PointCoord.x, gl_PointCoord.y);
 	texColor = texture2D(texture, texCoords);
-	gl_FragColor = vec4(texColor.r, texColor.r, texColor.r, 0.6) * v_color;
+	gl_FragColor = vec4(texColor.r, texColor.r, texColor.r, 0.08) * v_color;
 }

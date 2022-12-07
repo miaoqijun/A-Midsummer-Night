@@ -24,7 +24,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, int &shadow_mode, bool &SSR_test, bool &SSR_ON, bool& scatter_ON);
 
 // camera
-Camera camera(glm::vec3(0.0f, 2.0f, 5.0f));
+Camera camera(glm::vec3(2.0f, 1.0f, 4.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -80,7 +80,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Skybox skybox("skybox_vs.glsl", "skybox_fs.glsl");
+    Skybox skybox;
     Scene scene;
 
     // render loop
@@ -131,7 +131,7 @@ int main()
 void processInput(GLFWwindow* window, int &shadow_mode, bool& SSR_test, bool& SSR_ON, bool &scatter_ON)
 {
     static double last_change = 0.0;
-    const double min_delta_time = 0.5;
+    const double min_delta_time = 0.4;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 

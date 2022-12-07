@@ -38,65 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="point_shadows_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="point_shadows_gs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="point_shadows_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="shadow_mapping_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="shadow_mapping_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="skybox_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="skybox_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="PBR_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="PBR_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="particle_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="particle_gs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="particle_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="SSR_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="SSR_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="water_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="water_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="water_gs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="smoke_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="smoke_fs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="skybox.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -112,5 +53,58 @@
     <ClInclude Include="water.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\particle_shaders\particle_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\particle_shaders\particle_gs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\particle_shaders\particle_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\particle_shaders\smoke_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\particle_shaders\smoke_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\PBR_shaders\PBR_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\PBR_shaders\PBR_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\shadows_shaders\point_shadows_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\shadows_shaders\point_shadows_gs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\shadows_shaders\point_shadows_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\skybox_shaders\skybox_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\skybox_shaders\skybox_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\SSR_shaders\SSR_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\SSR_shaders\SSR_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\water_shaders\water_fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\water_shaders\water_gs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\water_shaders\water_vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

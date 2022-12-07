@@ -146,32 +146,30 @@
     <ClCompile Include="water.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="particle_fs.glsl" />
-    <None Include="particle_gs.glsl" />
-    <None Include="particle_vs.glsl" />
-    <None Include="PBR_fs.glsl" />
-    <None Include="PBR_vs.glsl" />
-    <None Include="point_shadows_fs.glsl" />
-    <None Include="point_shadows_gs.glsl" />
-    <None Include="point_shadows_vs.glsl" />
-    <None Include="shadow_mapping_fs.glsl" />
-    <None Include="shadow_mapping_vs.glsl" />
-    <None Include="skybox_fs.glsl" />
-    <None Include="skybox_vs.glsl" />
-    <None Include="smoke_fs.glsl" />
-    <None Include="smoke_vs.glsl" />
-    <None Include="SSR_fs.glsl" />
-    <None Include="SSR_vs.glsl" />
-    <None Include="water_fs.glsl" />
-    <None Include="water_gs.glsl" />
-    <None Include="water_vs.glsl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="water.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\particle_shaders\particle_fs.glsl" />
+    <None Include="shaders\particle_shaders\particle_gs.glsl" />
+    <None Include="shaders\particle_shaders\particle_vs.glsl" />
+    <None Include="shaders\particle_shaders\smoke_fs.glsl" />
+    <None Include="shaders\particle_shaders\smoke_vs.glsl" />
+    <None Include="shaders\PBR_shaders\PBR_fs.glsl" />
+    <None Include="shaders\PBR_shaders\PBR_vs.glsl" />
+    <None Include="shaders\shadows_shaders\point_shadows_fs.glsl" />
+    <None Include="shaders\shadows_shaders\point_shadows_gs.glsl" />
+    <None Include="shaders\shadows_shaders\point_shadows_vs.glsl" />
+    <None Include="shaders\skybox_shaders\skybox_fs.glsl" />
+    <None Include="shaders\skybox_shaders\skybox_vs.glsl" />
+    <None Include="shaders\SSR_shaders\SSR_fs.glsl" />
+    <None Include="shaders\SSR_shaders\SSR_vs.glsl" />
+    <None Include="shaders\water_shaders\water_fs.glsl" />
+    <None Include="shaders\water_shaders\water_gs.glsl" />
+    <None Include="shaders\water_shaders\water_vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

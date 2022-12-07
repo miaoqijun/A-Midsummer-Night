@@ -13,7 +13,7 @@ out float v_factor;
 void main()
 {
 	float ageFactor = clamp(factor, 0.0f, 1.0f);
-	float scale = ageFactor * 50.0f;
+	float scale = ageFactor * 32.0f;
 	gl_Position = projection * view * model * vec4(Position, 1.0);
 	gl_PointSize = scale;
 	v_color = Color;

@@ -1,6 +1,6 @@
 #include "skybox.h"
 
-Skybox::Skybox(const char* vertexPath, const char* fragmentPath)
+Skybox::Skybox()
 {
     shader = Shader(vertexPath, fragmentPath);
 

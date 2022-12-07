@@ -1,5 +1,5 @@
 #pragma once
-#define PI 3.14159
+#define PI 3.14159f
 #include <vector>
 
 
@@ -24,7 +24,7 @@ const glm::vec4 SMOKE_INIT_COLOR(0.1f, 0.1f, 0.1f, 1.0f);
 const float SMOKE_MAX_LIFE = 1.0f;
 const float SMOKE_MIN_LIFE = 0.9f;
 const int SMOKE_NEW_PARTICLES = 5;
-const float MAX_EMISSION_ANGLE = PI / 12;
+const float MAX_EMISSION_ANGLE = PI / 12.0f;
 const glm::vec3 U_GRAVITY(0.0f, 500.0f, 0.0f);
 const int NEW_PARTICLES = 5;
 
@@ -54,9 +54,9 @@ public:
     glm::vec3 get_light_position();
 private:
     // State  
-    const char* vs_path = "particle_vs.glsl";
-    const char* gs_path = "particle_gs.glsl";
-    const char* fs_path = "particle_fs.glsl";
+    const char* vs_path = "shaders/particle_shaders/particle_vs.glsl";
+    const char* gs_path = "shaders/particle_shaders/particle_gs.glsl";
+    const char* fs_path = "shaders/particle_shaders/particle_fs.glsl";
     std::vector<FireParticle> particles;
     const GLuint amount = 70000;
     glm::vec3 avg_coord;
@@ -83,9 +83,9 @@ public:
     void Draw(glm::mat4 projection, glm::mat4 view);
 private:
     // State
-    const char* vs_path = "smoke_vs.glsl";
-    const char* gs_path = "smoke_gs.glsl";
-    const char* fs_path = "smoke_fs.glsl";
+    const char* vs_path = "shaders/particle_shaders/smoke_vs.glsl";
+    const char* gs_path = "shaders/particle_shaders/smoke_gs.glsl";
+    const char* fs_path = "shaders/particle_shaders/smoke_fs.glsl";
     std::vector<SmokeParticle> particles;
     const GLuint amount = 50000;
     // Render state
@@ -94,7 +94,7 @@ private:
     GLuint VBO;
     GLuint lastUsedParticle;
     const glm::vec3 scale = glm::vec3(0.20f, 0.20f, 0.20f);
-    const glm::vec3 position = glm::vec3(-1.5f, 2.8f, 0.0f);
+    const glm::vec3 position = glm::vec3(-1.57f, 2.8f, 0.0f);
     glm::mat4 model;
     // Initializes buffer and vertex attributes
     void init();

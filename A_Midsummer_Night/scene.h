@@ -36,9 +36,9 @@ struct PointLight {
 
 class Scene {
 private:
-    const char* PBR_vs_path = "PBR_vs.glsl", * PBR_fs_path = "PBR_fs.glsl";
-    const char* shadow_vs_path = "point_shadows_vs.glsl", * shadow_fs_path = "point_shadows_fs.glsl", * shadow_gs_path = "point_shadows_gs.glsl";
-    const char* SSR_vs_path = "SSR_vs.glsl", * SSR_fs_path = "SSR_fs.glsl";
+    const char* PBR_vs_path = "shaders/PBR_shaders/PBR_vs.glsl", * PBR_fs_path = "shaders/PBR_shaders/PBR_fs.glsl";
+    const char* shadow_vs_path = "shaders/shadows_shaders/point_shadows_vs.glsl", * shadow_fs_path = "shaders/shadows_shaders/point_shadows_fs.glsl", * shadow_gs_path = "shaders/shadows_shaders/point_shadows_gs.glsl";
+    const char* SSR_vs_path = "shaders/SSR_shaders/SSR_vs.glsl", * SSR_fs_path = "shaders/SSR_shaders/SSR_fs.glsl";
     Shader PBR_shader, depth_shader, SSR_shader;
     PointLight point_lights[POINT_LIGHT_NUM] = {
         glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 1.0f, 1.0f),

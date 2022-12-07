@@ -280,7 +280,7 @@ float evaluateDensity(vec3 nowPos)
        nowPos.y < HOUSE_MIN_Y || nowPos.y > HOUSE_MAX_Y ||
        nowPos.z < HOUSE_MIN_Z || nowPos.z > HOUSE_MAX_Z) //not in house
         return 0.0;
-    return 0.3;
+    return 0.5;
 }
 
 float visibility(vec3 pos) {

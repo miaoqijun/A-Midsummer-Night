@@ -240,7 +240,7 @@ SmokeParticleGenerator::SmokeParticleGenerator()
 }
 void SmokeParticleGenerator::init()
 {
-    srand(time(NULL));
+    srand(unsigned(time(NULL)));
     for (GLuint i = 0; i < this->amount; ++i)
         this->particles.push_back(SmokeParticle());
     float radius = 0.5f;
@@ -261,9 +261,9 @@ void SmokeParticleGenerator::init()
         particles[i].Position.y = 0.0f;
         azimuthAngle = (float)rand() / ((float)RAND_MAX);
         azimuthAngle *= MAX_EMISSION_ANGLE;
-        particles[i].Velocity.x = sin(azimuthAngle) * cos(polar_angle) * 5.0;
-        particles[i].Velocity.y = cos(azimuthAngle) * 5.0;
-        particles[i].Velocity.z = sin(azimuthAngle) * sin(polar_angle) * 5.0;
+        particles[i].Velocity.x = sin(azimuthAngle) * cos(polar_angle) * 5.0f;
+        particles[i].Velocity.y = cos(azimuthAngle) * 5.0f;
+        particles[i].Velocity.z = sin(azimuthAngle) * sin(polar_angle) * 5.0f;
         particles[i].Life = (SMOKE_MAX_LIFE - SMOKE_MIN_LIFE) * (float)rand() / ((float)RAND_MAX) + SMOKE_MIN_LIFE;
         particles[i].Color = SMOKE_INIT_COLOR;
         particles[i].Delay = (float)rand() / ((float)RAND_MAX);
@@ -304,9 +304,9 @@ void SmokeParticleGenerator::respawnParticle(SmokeParticle& particle)
     particle.Position.y = 0.0f;
     azimuthAngle = (float)rand() / ((float)RAND_MAX);
     azimuthAngle *= MAX_EMISSION_ANGLE;
-    particle.Velocity.x = sin(azimuthAngle) * cos(polar_angle) * 5.0;
-    particle.Velocity.y = cos(azimuthAngle) * 5.0;
-    particle.Velocity.z = sin(azimuthAngle) * sin(polar_angle) * 5.0;
+    particle.Velocity.x = sin(azimuthAngle) * cos(polar_angle) * 5.0f;
+    particle.Velocity.y = cos(azimuthAngle) * 5.0f;
+    particle.Velocity.z = sin(azimuthAngle) * sin(polar_angle) * 5.0f;
 
     particle.Life = (float)rand() / ((float)RAND_MAX);
     particle.Delay = (float)rand() / ((float)RAND_MAX);
@@ -321,14 +321,13 @@ void SmokeParticleGenerator::Update(GLfloat dt)
         respawnParticle(particles[unusedParticle]);
     }
 
-    float alpha1, alpha2;
     for (GLuint i = 0; i < amount; i++)
     {
         SmokeParticle& p = particles[i];
         p.Age += dt;
         if (p.Age < p.Life && p.Age > p.Delay)
         {
-            p.Factor = 1.0 - ((p.Age - p.Delay) / p.Life);
+            p.Factor = 1.0f - ((p.Age - p.Delay) / p.Life);
             p.Position += p.Velocity * dt + U_GRAVITY * dt * dt * 10.0f;
         }
     }
@@ -384,7 +383,7 @@ void SmokeParticleGenerator::Draw(glm::mat4 projection, glm::mat4 view)
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_POINTS, 0, vertices.size() / 8);
+    glDrawArrays(GL_POINTS, 0, GLsizei(vertices.size() / 8));
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LESS);

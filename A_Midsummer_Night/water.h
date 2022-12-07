@@ -14,7 +14,7 @@
 class Water {
 private:
     void load_models();
-    const char* water_vs_path = "water_vs.glsl", * water_fs_path = "water_fs.glsl", * water_gs_path = "water_gs.glsl";
+    const char* water_vs_path = "shaders/water_shaders/water_vs.glsl", * water_fs_path = "shaders/water_shaders/water_fs.glsl", * water_gs_path = "shaders/water_shaders/water_gs.glsl";
     unsigned int VBO, VAO, EBO;
     const int VERTEX_COUNT = 512, SIZE = 100;
     string water_path = "../resources/textures/water/water_textures_2k.png";

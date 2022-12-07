@@ -11,6 +11,8 @@
 
 class Skybox {
 private:
+    const char* vertexPath = "shaders/skybox_shaders/skybox_vs.glsl";
+    const char* fragmentPath = "shaders/skybox_shaders/skybox_fs.glsl";
     const float skyboxVertices[108] = {
         // positions          
         -1.0f,  1.0f, -1.0f,
@@ -69,7 +71,7 @@ private:
     unsigned int loadCubemap();
     Shader shader;
 public:
-	Skybox(const char* vertexPath, const char* fragmentPath);
+	Skybox();
     void render(glm::mat4 view, glm::mat4 projection);
     ~Skybox();
 };
