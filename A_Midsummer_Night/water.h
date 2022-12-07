@@ -11,17 +11,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//const unsigned int SCR_WIDTH = 1200;
-//const unsigned int SCR_HEIGHT = 800;
-
 class Water {
 private:
     void load_models();
-    const char* water_vs_path = "water_vs.glsl", * water_fs_path = "water_fs.glsl";
+    const char* water_vs_path = "water_vs.glsl", * water_fs_path = "water_fs.glsl", * water_gs_path = "water_gs.glsl";
     unsigned int VBO, VAO, EBO;
     const int VERTEX_COUNT = 512, SIZE = 100;
     string water_path = "../resources/textures/water/water_textures_2k.png";
-    unsigned int watermapTexture;
+    string normal_path = "../resources/textures/water/water_textures_2k_normal.png";
+    unsigned int watermapTexture, normalTexture;
     unsigned int loadmap(string path, unsigned int mode);
     const glm::vec3 position = glm::vec3(0.0f, -0.05f, 0.0f);
     glm::mat4 model;

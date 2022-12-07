@@ -1,14 +1,19 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec3 normal;
-in vec2 TexCoord;
-in vec3 FragPos;
-
-uniform sampler2D texture1;
-
 #define NR_POINT_LIGHTS 3
 
+in GS_OUT
+{
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos[NR_POINT_LIGHTS];
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} fs_in;
+
+uniform sampler2D texture_albedo;
+uniform sampler2D texture_normal;
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 uniform int shadow_mode;
 
@@ -77,7 +82,7 @@ void LocalBasis(vec3 n, out vec3 b1, out vec3 b2) {
 }
 
 float hard_shadow(int index) {
-    vec3 fragToLight = FragPos - pointLights[index].position;
+    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     float shadow_depth = texture(depthMap[index], fragToLight).r;
     shadow_depth *= far_plane;
@@ -89,12 +94,12 @@ float PCF(int index) {
     float shadowmapSize = 1024.;
     float visibility = 0.;
 
-    vec3 fragToLight = FragPos - pointLights[index].position;
+    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     vec3 n = normalize(fragToLight), b1, b2;
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
-    poissonDiskSamples(FragPos.xy);
+    poissonDiskSamples(fs_in.FragPos.xy);
     for(int i = 0; i < NUM_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
     for(int i = 0; i < NUM_SAMPLES; i++) {
@@ -113,12 +118,12 @@ float PCSS(int index){
     int blockerNum = 0;
     float block_depth = 0.;
 
-    vec3 fragToLight = FragPos - pointLights[index].position;
+    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     vec3 n = normalize(fragToLight), b1, b2;
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
-    poissonDiskSamples(FragPos.xy);
+    poissonDiskSamples(fs_in.FragPos.xy);
     for(int i = 0; i < NUM_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
 
@@ -202,10 +207,11 @@ float visibility(int index) {
 // ----------------------------------------------------------------------------
 void main()
 {		
-    vec3 N = normalize(normal);
-    vec3 V = normalize(viewPos - FragPos);
+    vec3 N = texture(texture_normal, fs_in.TexCoords).rgb;
+    N = normalize(N * 2.0 - 1.0);
+    vec3 V = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
 
-    vec3 albedo = pow(texture(texture1, TexCoord).rgb, vec3(2.2));
+    vec3 albedo = pow(texture(texture_albedo, fs_in.TexCoords).rgb, vec3(2.2));
     float metalness = 0.0;
     float roughness = 0.0;
     float ao = 0.0;
@@ -220,9 +226,9 @@ void main()
     for(int i = 0; i < NR_POINT_LIGHTS; ++i) 
     {
         // calculate per-light radiance
-        vec3 L = normalize(pointLights[i].position - FragPos);
+        vec3 L = normalize(fs_in.TangentLightPos[i] - fs_in.TangentFragPos);
         vec3 H = normalize(V + L);
-        float distance = length(pointLights[i].position - FragPos);
+        float distance = length(pointLights[i].position - fs_in.FragPos);
         float attenuation = 1.0 / (pointLights[i].constant + pointLights[i].linear * distance + pointLights[i].quadratic * (distance * distance));
         vec3 radiance = pointLights[i].diffuse * attenuation;
 

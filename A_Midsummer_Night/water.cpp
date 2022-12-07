@@ -5,15 +5,17 @@ Water::Water() {
 
     stbi_set_flip_vertically_on_load(true);
     watermapTexture = loadmap(water_path, GL_MIRRORED_REPEAT);
+    normalTexture = loadmap(normal_path, GL_MIRRORED_REPEAT);
     stbi_set_flip_vertically_on_load(false);
     water_shader.use();
-    glUniform1i(glGetUniformLocation(water_shader.ID, "texture1"), 5);
+    glUniform1i(glGetUniformLocation(water_shader.ID, "texture_albedo"), 5);
+    glUniform1i(glGetUniformLocation(water_shader.ID, "texture_normal"), 6);
 }
 
 void Water::load_models()
 {
     //grass
-    water_shader = Shader(water_vs_path, water_fs_path);
+    water_shader = Shader(water_vs_path, water_fs_path, water_gs_path);
     int count = VERTEX_COUNT * VERTEX_COUNT;
     float* vertices = new float[count * 5];
     unsigned int* indices = new unsigned int[6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1)];
@@ -79,6 +81,8 @@ void Water::render(glm::mat4 view, glm::mat4 projection,double time)
     // render grass
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, watermapTexture);
+    glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, normalTexture);
     model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     water_shader.setMat4("model", model);

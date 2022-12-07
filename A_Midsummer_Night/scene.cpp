@@ -189,12 +189,12 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
-    GLfloat near = 0.1f;
     GLfloat far = 25.0f;
-    glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
     std::vector<glm::mat4> shadowTransforms[POINT_LIGHT_NUM];
     
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+        GLfloat near = i < POINT_LIGHT_NUM - 1 ? 1.0f : 0.1f;
+        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
         shadowTransforms[i].push_back(shadowProj * glm::lookAt(point_lights[i].position, point_lights[i].position + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
         shadowTransforms[i].push_back(shadowProj * glm::lookAt(point_lights[i].position, point_lights[i].position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
         shadowTransforms[i].push_back(shadowProj * glm::lookAt(point_lights[i].position, point_lights[i].position + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
@@ -213,8 +213,8 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         glUniform3fv(glGetUniformLocation(depth_shader.ID, "lightPos"), 1, &point_lights[i].position[0]);
         //models
         for (int j = 0; j < models.size(); j++) {
-            if ((i == 0 && j == 4) || (i == 1 && j == 5))   //skip lightsource itself when rendering shadow map
-                continue;
+            //if ((i == 0 && j == 4) || (i == 1 && j == 5))   //skip lightsource itself when rendering shadow map
+            //    continue;
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, models[j].position); // translate it down so it's at the center of the scene 
             model = glm::rotate(model, models[j].angle[1], models[j].rotateAxis[1]);
