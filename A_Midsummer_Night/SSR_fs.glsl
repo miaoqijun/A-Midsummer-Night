@@ -12,8 +12,10 @@ struct Material {
 
 uniform Material material;
 uniform vec3 viewPos;
+uniform vec3 lightPos;
 uniform bool SSR_ON;
 uniform bool SSR_test;
+uniform bool scatter_ON;
 
 in VS_OUT {
     vec3 FragPos;
@@ -24,6 +26,8 @@ in VS_OUT {
 
 uniform sampler2D colorMap;
 uniform sampler2D depthMap;
+uniform samplerCube lightDepthMap;
+uniform float far_plane;
 
 #define PI 3.141592653589793
 #define TWO_PI 6.283185307
@@ -142,7 +146,7 @@ bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
     return true;
 }
 
-// ----------------------------------------------------------------------------
+// PBR
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness*roughness;
@@ -243,6 +247,72 @@ vec3 PBR_shading(vec3 hitPos, vec3 hitColor)
     return color;
 }
 
+//scatter
+
+#define EPS 2e-2
+#define SCATTER_SAMPLES 50
+#define HOUSE_MIN_X -1.35294
+#define HOUSE_MAX_X 1.35294
+#define HOUSE_MIN_Y 0.68627
+#define HOUSE_MAX_Y 1.66667
+#define HOUSE_MIN_Z -1.39216
+#define HOUSE_MAX_Z 1.43137
+
+highp float rand_2to1(vec2 uv) { 
+  // 0 - 1
+	const highp float a = 12.9898, b = 78.233, c = 43758.5453;
+	highp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );
+	return fract(sin(sn) * c);
+}
+
+float phaseFunction(vec3 viewPos, vec3 lightPos, vec3 nowPos)
+{
+    const float g = 0.9;
+    vec3 lightDr = normalize(nowPos - lightPos);
+    vec3 rd = normalize(nowPos - viewPos);
+    float cosTheta = dot(lightDr, -rd);
+    return 1 / (4 * PI) * (1 - g * g)/ pow(1 + g * g - 2 * g * cosTheta, 1.5);
+}
+
+float evaluateDensity(vec3 nowPos)
+{
+    if(nowPos.x < HOUSE_MIN_X || nowPos.x > HOUSE_MAX_X ||
+       nowPos.y < HOUSE_MIN_Y || nowPos.y > HOUSE_MAX_Y ||
+       nowPos.z < HOUSE_MIN_Z || nowPos.z > HOUSE_MAX_Z) //not in house
+        return 0.0;
+    return 0.3;
+}
+
+float visibility(vec3 pos) {
+    vec3 fragToLight = pos - lightPos;
+    float cur_depth = length(fragToLight);
+    float shadow_depth = texture(lightDepthMap, fragToLight).r;
+    shadow_depth *= far_plane;
+    return float(cur_depth < shadow_depth + EPS);
+}
+
+vec4 volumeScattering(vec3 rO, vec3 finalPos)
+{
+    const float lightIntense = 30.;
+
+    float transmittance = 1.0;
+    vec3 scatteredLight = vec3(0.0, 0.0, 0.0);
+    float step_long = distance(finalPos, rO) / SCATTER_SAMPLES;
+
+    vec3 rD = normalize(finalPos - rO) * step_long;
+    vec3 nowPos = rO + rand_2to1(finalPos.xy) * rD;
+    while(true) {
+        if(dot(nowPos - rO, nowPos - rO) - dot(finalPos - rO, finalPos - rO) > EPS)
+            break;
+        float vLight = lightIntense / dot(nowPos - lightPos, nowPos - lightPos);
+        float D = evaluateDensity(nowPos);
+        scatteredLight += D * vLight * phaseFunction(rO, lightPos, nowPos) * transmittance * step_long * visibility(nowPos);
+        transmittance *= exp(-D * step_long);
+        nowPos += rD;
+    }
+    return vec4(scatteredLight, transmittance);
+}
+
 #define SAMPLE_NUM 20
 
 void main() {
@@ -274,6 +344,15 @@ void main() {
         L_in /= float(SAMPLE_NUM);
   
         L += L_in;
+    }
+
+    if(scatter_ON) {
+        vec4 scatTrans = volumeScattering(viewPos, fs_in.FragPos);
+        // HDR tonemapping
+        scatTrans.xyz = scatTrans.xyz / (scatTrans.xyz + vec3(1.0));
+        // gamma correct
+        scatTrans.xyz = pow(scatTrans.xyz, vec3(1.0/2.2)); 
+        L = L * scatTrans.w + scatTrans.xyz;
     }
 
     FragColor = vec4(L, 1.0);

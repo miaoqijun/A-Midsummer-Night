@@ -5,7 +5,6 @@ out vec4 FragColor;
 
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 uniform bool SSR_test;
-uniform bool scatter_ON;
 uniform int shadow_mode;
 
 struct Material {
@@ -213,49 +212,6 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-float phaseFunction(vec3 viewPos, vec3 lightPos, vec3 nowPos)
-{
-    const float g = 0.9;
-    vec3 lightDr = normalize(nowPos - lightPos);
-    vec3 rd = normalize(nowPos - viewPos);
-    float cosTheta = dot(lightDr, -rd);
-    return 1 / (4 * PI) * (1 - g * g)/ pow(1 + g * g - 2 * g * cosTheta, 1.5);
-}
-
-float evaluateDensity(vec3 nowPos)
-{
-    if(nowPos.x < -1.35294 || nowPos.x > 1.35294 ||
-       nowPos.y < 0.68627  || nowPos.y > 1.66667 ||
-       nowPos.z < -1.39216 || nowPos.z > 1.43137) //not in house
-        return 0.0;
-    return 0.3;
-}
-
-#define SCATTER_SAMPLES 30
-vec4 volumeScattering(vec3 rO, vec3 finalPos)
-{
-    const float lightIntense = 70.;
-    vec3 lightPos = pointLights[0].position;
-
-    float transmittance = 1.0;
-    vec3 scatteredLight = vec3(0.0, 0.0, 0.0);
-    float step_long = distance(finalPos, rO) / SCATTER_SAMPLES;
-
-    vec3 rD = normalize(finalPos - rO) * step_long;
-    vec3 nowPos = rO + fract(rand_2to1(finalPos.xy)) * rD;
-    while(true) {
-        nowPos += rD;
-        if(dot(nowPos - rO, nowPos - rO) - dot(finalPos - rO, finalPos - rO) > EPS)
-            break;
-        float vLight = lightIntense / dot(nowPos - lightPos, nowPos - lightPos);
-        float D = evaluateDensity(nowPos);
-        scatteredLight += D * vLight * phaseFunction(rO, lightPos, nowPos) * transmittance * step_long * visibility(0, nowPos);
-        transmittance *= exp(-D * step_long);
-
-    }
-    return vec4(scatteredLight, transmittance);
-}
-
 // ----------------------------------------------------------------------------
 void main()
 {		
@@ -318,16 +274,11 @@ void main()
     vec3 color = Lo + vec3(emissive);
     if(!SSR_test)
         color += ambient;
-    if(!SSR_test && scatter_ON) {
-        vec4 scatTrans = volumeScattering(viewPos, fs_in.FragPos);
-        color = color * scatTrans.w + scatTrans.xyz;
-    }
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
-
 
     FragColor = vec4(color, 1.0);
 }

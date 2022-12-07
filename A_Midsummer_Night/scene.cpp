@@ -49,6 +49,7 @@ Scene::Scene()
     SSR_shader.use();
     SSR_shader.setInt("colorMap", 0);
     SSR_shader.setInt("depthMap", 1);
+    SSR_shader.setInt("lightDepthMap", 2);
 
     water.water_shader.use();
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {
@@ -97,6 +98,42 @@ void Scene::load_models()
     };
     models.push_back(house);
 
+    WorldModel sofa = {
+        glm::vec3(1.0f, 0.72f, 0.5f),
+        glm::vec3(0.005f, 0.005f, 0.005f),
+        glm::radians(-90.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Sofa/sofa.obj")
+    };
+    models.push_back(sofa);
+
+    WorldModel carpet = {
+        glm::vec3(-0.8f, 0.72f, 0.0f),
+        glm::vec3(0.005f, 0.005f, 0.005f),
+        glm::radians(-90.0f), glm::radians(90.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+        Model("../resources/objects/Carpet/Carpet.obj")
+    };
+    models.push_back(carpet);
+
+    WorldModel gramophone = {
+        glm::vec3(-0.8f, 0.72f, 0.2f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::radians(-30.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Gramophone/gramophone.obj")
+    };
+    models.push_back(gramophone);
+
+    WorldModel teapot = {
+        glm::vec3(-0.8f, 0.72f, -0.3f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::radians(-90.0f), glm::radians(0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        Model("../resources/objects/Teapot/teapot.obj")
+    };
+    models.push_back(teapot);
+
     WorldModel ground = {
         glm::vec3(0.0f, -1.75f, 0.0f),
         glm::vec3(0.5f, 0.5f, 0.5f),
@@ -144,42 +181,6 @@ void Scene::load_models()
         Model("../resources/objects/Mug/Mug.obj")
     };
     models.push_back(mug);
-
-    WorldModel sofa = {
-        glm::vec3(1.0f, 0.72f, 0.5f),
-        glm::vec3(0.005f, 0.005f, 0.005f),
-        glm::radians(-90.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Sofa/sofa.obj")
-    };
-    models.push_back(sofa);
-
-    WorldModel carpet = {
-        glm::vec3(-0.8f, 0.72f, 0.0f),
-        glm::vec3(0.005f, 0.005f, 0.005f),
-        glm::radians(-90.0f), glm::radians(90.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
-        Model("../resources/objects/Carpet/Carpet.obj")
-    };
-    models.push_back(carpet);
-
-    WorldModel gramophone = {
-        glm::vec3(-0.8f, 0.72f, 0.2f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(-30.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Gramophone/gramophone.obj")
-    };
-    models.push_back(gramophone);
-
-    WorldModel teapot = {
-        glm::vec3(-0.8f, 0.72f, -0.3f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::radians(-90.0f), glm::radians(0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-        Model("../resources/objects/Teapot/teapot.obj")
-    };
-    models.push_back(teapot);
 }
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON, float delatTime, float totalTime)
@@ -244,10 +245,6 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         PBR_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
         PBR_shader.setInt("shadow_mode", shadow_mode);
         PBR_shader.setBool("SSR_test", SSR_test);
-        if(i == 0)  //only scatter in house
-            PBR_shader.setBool("scatter_ON", scatter_ON);
-        else
-            PBR_shader.setBool("scatter_ON", false);
         PBR_shader.setVec3("viewPos", viewPos);
         PBR_shader.setMat4("model", model);
         PBR_shader.setMat4("projection", projection);
@@ -266,13 +263,15 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, depthBuffer);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap[0]);
     // render the loaded model
-    for (auto& worldModel : models) {
+    for (int i = 0; i < models.size(); i++) {
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
-        model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
-        model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, models[i].position); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, models[i].angle[1], models[i].rotateAxis[1]);
+        model = glm::rotate(model, models[i].angle[0], models[i].rotateAxis[0]);
+        model = glm::scale(model, models[i].scale);	// it's a bit too big for our scene, so scale it down
         SSR_shader.use();
         SSR_shader.setVec3("viewPos", viewPos);
         SSR_shader.setMat4("model", model);
@@ -280,7 +279,13 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         SSR_shader.setMat4("view", view);
         SSR_shader.setBool("SSR_test", SSR_test);
         SSR_shader.setBool("SSR_ON", SSR_ON);
-        worldModel.model.Draw(SSR_shader);
+        if (i < 5)  //only scatter in house
+            SSR_shader.setBool("scatter_ON", scatter_ON);
+        else
+            SSR_shader.setBool("scatter_ON", false);
+        SSR_shader.setFloat("far_plane", far);
+        SSR_shader.setVec3("lightPos", point_lights[0].position);
+        models[i].model.Draw(SSR_shader);
     }
 
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {

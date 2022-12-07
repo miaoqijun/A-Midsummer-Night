@@ -149,8 +149,6 @@ void processInput(GLFWwindow* window, int &shadow_mode, bool& SSR_test, bool& SS
             SSR_test = !SSR_test;
             if (SSR_test)
                 SSR_ON = false;
-            else
-                scatter_ON = false;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
