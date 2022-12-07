@@ -10,6 +10,8 @@ Water::Water() {
     water_shader.use();
     glUniform1i(glGetUniformLocation(water_shader.ID, "texture_albedo"), 5);
     glUniform1i(glGetUniformLocation(water_shader.ID, "texture_normal"), 6);
+    glUniform1i(glGetUniformLocation(water_shader.ID, "colorMap"), 7);
+    glUniform1i(glGetUniformLocation(water_shader.ID, "screenDepthMap"), 8);
 }
 
 void Water::load_models()

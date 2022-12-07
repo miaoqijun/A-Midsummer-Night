@@ -264,7 +264,6 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, depthBuffer);
-
     // render the loaded model
     for (auto& worldModel : models) {
         glm::mat4 model = glm::mat4(1.0f);
@@ -282,6 +281,14 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         worldModel.model.Draw(SSR_shader);
     }
 
+    for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap[i]);
+    }
+    glActiveTexture(GL_TEXTURE7);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glActiveTexture(GL_TEXTURE8);
+    glBindTexture(GL_TEXTURE_2D, depthBuffer);
     water.water_shader.use();
     water.water_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
     water.water_shader.setInt("shadow_mode", shadow_mode);

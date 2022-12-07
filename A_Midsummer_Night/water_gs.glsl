@@ -7,6 +7,8 @@ in vec3 FragPos[];
 in vec2 TexCoords[];
 
 uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 uniform vec3 viewPos;
 
 #define NR_POINT_LIGHTS 3
@@ -15,9 +17,11 @@ out GS_OUT
 {
     vec3 FragPos;
     vec2 TexCoords;
+    vec3 Normal;
     vec3 TangentLightPos[NR_POINT_LIGHTS];
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+    mat4 worldToScreen;
 } gs_out;
 
 struct PointLight {
@@ -81,6 +85,8 @@ void main() {
     gs_out.TangentFragPos  = TBN * FragPos[0];
     gs_out.FragPos = FragPos[0];
     gs_out.TexCoords = TexCoords[0];
+    gs_out.Normal = Normal[0];
+    gs_out.worldToScreen = projection * view;
     gl_Position = gl_in[0].gl_Position; 
     EmitVertex();
 
@@ -97,6 +103,8 @@ void main() {
     gs_out.TangentFragPos  = TBN * FragPos[1];
     gs_out.FragPos = FragPos[1];
     gs_out.TexCoords = TexCoords[1];
+    gs_out.Normal = Normal[1];
+    gs_out.worldToScreen = projection * view;
     gl_Position = gl_in[1].gl_Position;
     EmitVertex();
 
@@ -113,6 +121,8 @@ void main() {
     gs_out.TangentFragPos  = TBN * FragPos[2];
     gs_out.FragPos = FragPos[2];
     gs_out.TexCoords = TexCoords[2];
+    gs_out.Normal = Normal[2];
+    gs_out.worldToScreen = projection * view;
     gl_Position = gl_in[2].gl_Position;
     EmitVertex();
 

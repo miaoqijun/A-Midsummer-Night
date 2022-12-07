@@ -7,13 +7,18 @@ in GS_OUT
 {
     vec3 FragPos;
     vec2 TexCoords;
+    vec3 Normal;
     vec3 TangentLightPos[NR_POINT_LIGHTS];
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+    mat4 worldToScreen;
 } fs_in;
 
+uniform vec3 viewPos;
 uniform sampler2D texture_albedo;
 uniform sampler2D texture_normal;
+uniform sampler2D colorMap;
+uniform sampler2D screenDepthMap;
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 uniform int shadow_mode;
 
@@ -38,8 +43,6 @@ struct PointLight {
 #define EPS 2e-2
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
-
-uniform vec3 viewPos;
 
 uniform float far_plane;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
@@ -204,6 +207,70 @@ float visibility(int index) {
         return PCSS(index);
 }
 
+vec4 Project(vec4 a) {
+  return a / a.w;
+}
+
+vec2 GetScreenCoordinate(vec3 posWorld) {
+  vec2 uv = Project(fs_in.worldToScreen * vec4(posWorld, 1.0)).xy * 0.5 + 0.5;
+  return uv;
+}
+
+float GetDepth(vec3 posWorld) {
+    vec4 screenSpaceCoord = fs_in.worldToScreen * vec4(posWorld, 1.0);
+    vec3 projCoords = screenSpaceCoord.xyz / screenSpaceCoord.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float depth = projCoords.z;
+    return depth;
+}
+
+float GetGBufferDepth(vec2 uv) {
+    float depth = texture(screenDepthMap, uv).x;
+    if (depth < 1e-2) {
+        depth = 1000.0;
+    }
+    return depth;
+}
+
+#define MAX_DIST 5.0
+#define STEP_LONG 0.05
+
+bool outScreen(vec3 pos){
+    vec2 uv = GetScreenCoordinate(pos);
+    return any(bvec4(lessThan(uv, vec2(0.0)), greaterThan(uv, vec2(1.0))));
+}
+
+bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
+    int level = 0;
+    vec3 delta = normalize(dir) * STEP_LONG;
+    vec3 nowPos = ori;
+    float total_dist = 0.0;
+
+    while(true) {
+        if(outScreen(nowPos))
+            return false;
+        vec3 nextPos = nowPos + delta;
+        float curDepth = GetDepth(nextPos);
+        float depth = GetGBufferDepth(GetScreenCoordinate(nextPos));
+        if(depth - curDepth >= 1e-5) {
+            total_dist += sqrt(dot(delta, delta));
+            if(total_dist - MAX_DIST >= 1e-5)
+                return false;
+            nowPos = nextPos;
+            level++;
+            delta *= 2.0;
+        }
+        else {
+            level--;
+            delta /= 2.0;
+            if(level < 0)
+                break;
+        }
+    }
+    hitPos = nowPos;
+    return true;
+}
+
 // ----------------------------------------------------------------------------
 void main()
 {		
@@ -259,16 +326,22 @@ void main()
 
         Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility(i);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
-    // ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.01) * albedo * ao;
-    vec3 color = Lo;// + ambient;
-
     // HDR tonemapping
-    color = color / (color + vec3(1.0));
+    Lo = Lo / (Lo + vec3(1.0));
     // gamma correct
-    color = pow(color, vec3(1.0/2.2)); 
+    Lo = pow(Lo, vec3(1.0/2.2)); 
 
+    vec3 normal = fs_in.Normal;//vec3(0.0, 1.0, 0.0);
+    vec3 L_in;
+    vec3 dir = normalize(reflect(fs_in.FragPos - viewPos, normal));
+    vec3 hitPos;
+    bool hit = RayMarch(fs_in.FragPos, dir, hitPos);
+    if(dot(dir, normal) > 0.0 && hit) {
+        vec2 uv_hit = GetScreenCoordinate(hitPos);
+        L_in = texture(colorMap, uv_hit).rgb;
+    }
+    else
+        L_in = Lo;
 
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4((Lo + L_in) / 2, 1.0);
 }

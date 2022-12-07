@@ -117,7 +117,9 @@ bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
     vec3 nowPos = ori;
     float total_dist = 0.0;
 
-    while(!outScreen(nowPos)) {
+    while(true) {
+        if(outScreen(nowPos))
+            return false;
         vec3 nextPos = nowPos + delta;
         float curDepth = GetDepth(nextPos);
         float depth = GetGBufferDepth(GetScreenCoordinate(nextPos));
