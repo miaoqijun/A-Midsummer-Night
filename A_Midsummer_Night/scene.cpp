@@ -182,7 +182,7 @@ void Scene::load_models()
     models.push_back(teapot);
 }
 
-void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delatTime, float totalTime)
+void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON, float delatTime, float totalTime)
 {
     Particle.Update(delatTime);
     point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
@@ -213,8 +213,6 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
         glUniform3fv(glGetUniformLocation(depth_shader.ID, "lightPos"), 1, &point_lights[i].position[0]);
         //models
         for (int j = 0; j < models.size(); j++) {
-            //if ((i == 0 && j == 4) || (i == 1 && j == 5))   //skip lightsource itself when rendering shadow map
-            //    continue;
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, models[j].position); // translate it down so it's at the center of the scene 
             model = glm::rotate(model, models[j].angle[1], models[j].rotateAxis[1]);
@@ -236,22 +234,26 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     }
 
     // render the loaded model
-    for (auto& worldModel : models) {
+    for (int i = 0; i < models.size(); i++) {
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, worldModel.position); // translate it down so it's at the center of the scene
-        model = glm::rotate(model, worldModel.angle[1], worldModel.rotateAxis[1]);
-        model = glm::rotate(model, worldModel.angle[0], worldModel.rotateAxis[0]);
-        model = glm::scale(model, worldModel.scale);	// it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, models[i].position); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, models[i].angle[1], models[i].rotateAxis[1]);
+        model = glm::rotate(model, models[i].angle[0], models[i].rotateAxis[0]);
+        model = glm::scale(model, models[i].scale);	// it's a bit too big for our scene, so scale it down
         PBR_shader.use();
         PBR_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
         PBR_shader.setInt("shadow_mode", shadow_mode);
         PBR_shader.setBool("SSR_test", SSR_test);
+        if(i == 0)  //only scatter in house
+            PBR_shader.setBool("scatter_ON", scatter_ON);
+        else
+            PBR_shader.setBool("scatter_ON", false);
         PBR_shader.setVec3("viewPos", viewPos);
         PBR_shader.setMat4("model", model);
         PBR_shader.setMat4("projection", projection);
         PBR_shader.setMat4("view", view);
         PBR_shader.setFloat("far_plane", far);
-        worldModel.model.Draw(PBR_shader);
+        models[i].model.Draw(PBR_shader);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

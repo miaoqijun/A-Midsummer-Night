@@ -60,5 +60,5 @@ private:
 
 public:
 	Scene();
-    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, float delattime, float totalTime);
+    void render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON, float delattime, float totalTime);
 };

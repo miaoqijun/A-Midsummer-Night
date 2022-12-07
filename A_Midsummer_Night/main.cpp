@@ -21,7 +21,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window, int &shadow_mode, bool &SSR_test, bool &SSR_ON);
+void processInput(GLFWwindow* window, int &shadow_mode, bool &SSR_test, bool &SSR_ON, bool& scatter_ON);
 
 // camera
 Camera camera(glm::vec3(0.0f, 2.0f, 5.0f));
@@ -86,7 +86,7 @@ int main()
     // render loop
     // -----------
     int shadow_mode = 2;
-    bool SSR_test = false, SSR_ON = false;
+    bool SSR_test = false, SSR_ON = false, scatter_ON = false;
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -100,7 +100,7 @@ int main()
 
         // input
         // -----
-        processInput(window, shadow_mode, SSR_test, SSR_ON);
+        processInput(window, shadow_mode, SSR_test, SSR_ON, scatter_ON);
 
         // render
         // ------
@@ -109,7 +109,7 @@ int main()
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        scene.render(camera.Position, view, projection, shadow_mode, SSR_test, SSR_ON, deltaTime, (float)glfwGetTime());
+        scene.render(camera.Position, view, projection, shadow_mode, SSR_test, SSR_ON, scatter_ON, deltaTime, (float)glfwGetTime());
         skybox.render(glm::mat4(glm::mat3(view)), projection);
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -126,9 +126,10 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window, int &shadow_mode, bool& SSR_test, bool& SSR_ON)
+void processInput(GLFWwindow* window, int &shadow_mode, bool& SSR_test, bool& SSR_ON, bool &scatter_ON)
 {
     static double last_change = 0.0;
+    const double min_delta_time = 0.5;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -143,39 +144,48 @@ void processInput(GLFWwindow* window, int &shadow_mode, bool& SSR_test, bool& SS
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
         double now = glfwGetTime();
-        if (now - last_change >= 0.2) {
+        if (now - last_change >= min_delta_time) {
             last_change = now;
             SSR_test = !SSR_test;
             if (SSR_test)
                 SSR_ON = false;
+            else
+                scatter_ON = false;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
         double now = glfwGetTime();
-        if (now - last_change >= 0.2) {
+        if (now - last_change >= min_delta_time) {
             last_change = now;
             SSR_ON = !SSR_ON;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
         double now = glfwGetTime();
-        if (now - last_change >= 0.2) {
+        if (now - last_change >= min_delta_time) {
             last_change = now;
             shadow_mode = 0;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
         double now = glfwGetTime();
-        if (now - last_change >= 0.2) {
+        if (now - last_change >= min_delta_time) {
             last_change = now;
             shadow_mode = 1;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
         double now = glfwGetTime();
-        if (now - last_change >= 0.2) {
+        if (now - last_change >= min_delta_time) {
             last_change = now;
             shadow_mode = 2;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+        double now = glfwGetTime();
+        if (now - last_change >= min_delta_time) {
+            last_change = now;
+            scatter_ON = !scatter_ON;
         }
     }
 }

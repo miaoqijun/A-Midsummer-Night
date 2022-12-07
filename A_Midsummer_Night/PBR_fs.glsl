@@ -5,6 +5,7 @@ out vec4 FragColor;
 
 uniform samplerCube depthMap[NR_POINT_LIGHTS];
 uniform bool SSR_test;
+uniform bool scatter_ON;
 uniform int shadow_mode;
 
 struct Material {
@@ -46,6 +47,7 @@ in VS_OUT {
     vec3 TangentFragPos;
 } fs_in;
 
+uniform vec3 viewPos;
 uniform float far_plane;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform Material material;
@@ -88,25 +90,25 @@ void LocalBasis(vec3 n, out vec3 b1, out vec3 b2) {
     b2 = vec3(b, sign_ + n.y * n.y * a, -n.y);
 }
 
-float hard_shadow(int index) {
-    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
+float hard_shadow(int index, vec3 pos) {
+    vec3 fragToLight = pos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     float shadow_depth = texture(depthMap[index], fragToLight).r;
     shadow_depth *= far_plane;
     return float(cur_depth < shadow_depth + EPS);
 }
 
-float PCF(int index) {
+float PCF(int index, vec3 pos) {
     float Stride = 10.;
     float shadowmapSize = 1024.;
     float visibility = 0.;
 
-    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
+    vec3 fragToLight = pos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     vec3 n = normalize(fragToLight), b1, b2;
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
-    poissonDiskSamples(fs_in.FragPos.xy);
+    poissonDiskSamples(pos.xy);
     for(int i = 0; i < NUM_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
     for(int i = 0; i < NUM_SAMPLES; i++) {
@@ -118,19 +120,19 @@ float PCF(int index) {
     return visibility / float(NUM_SAMPLES);
 }
 
-float PCSS(int index){
+float PCSS(int index, vec3 pos){
     float Stride = 50.;
     float shadowmapSize = 1024.;
     float visibility = 0.;
     int blockerNum = 0;
     float block_depth = 0.;
 
-    vec3 fragToLight = fs_in.FragPos - pointLights[index].position;
+    vec3 fragToLight = pos - pointLights[index].position;
     float cur_depth = length(fragToLight);
     vec3 n = normalize(fragToLight), b1, b2;
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
-    poissonDiskSamples(fs_in.FragPos.xy);
+    poissonDiskSamples(pos.xy);
     for(int i = 0; i < NUM_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
 
@@ -159,6 +161,15 @@ float PCSS(int index){
         visibility += res;
     }
     return visibility / float(NUM_SAMPLES);
+}
+
+float visibility(int index, vec3 pos) {
+    if(shadow_mode == 0)
+        return hard_shadow(index, pos);
+    else if(shadow_mode == 1)
+        return PCF(index, pos);
+    else
+        return PCSS(index, pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -202,13 +213,46 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-float visibility(int index) {
-    if(shadow_mode == 0)
-        return hard_shadow(index);
-    else if(shadow_mode == 1)
-        return PCF(index);
-    else
-        return PCSS(index);
+float phaseFunction(vec3 viewPos, vec3 lightPos, vec3 nowPos)
+{
+    const float g = 0.9;
+    vec3 lightDr = normalize(nowPos - lightPos);
+    vec3 rd = normalize(nowPos - viewPos);
+    float cosTheta = dot(lightDr, -rd);
+    return 1 / (4 * PI) * (1 - g * g)/ pow(1 + g * g - 2 * g * cosTheta, 1.5);
+}
+
+float evaluateDensity(vec3 nowPos)
+{
+    if(nowPos.x < -1.35294 || nowPos.x > 1.35294 ||
+       nowPos.y < 0.68627  || nowPos.y > 1.66667 ||
+       nowPos.z < -1.39216 || nowPos.z > 1.43137)
+        return 0.0;
+    return 0.5;
+}
+
+#define SCATTER_SAMPLES 70
+vec4 volumeScattering(vec3 rO, vec3 finalPos)
+{
+    const float lightIntense = 70.;
+    vec3 lightPos = pointLights[0].position;
+
+    float transmittance = 1.0;
+    vec3 scatteredLight = vec3(0.0, 0.0, 0.0);
+    float step_long = distance(finalPos, rO) / SCATTER_SAMPLES;
+
+    vec3 rD = normalize(finalPos - rO) * step_long;
+    vec3 nowPos = rO;
+    while(true) {
+        nowPos += rD;
+        if(dot(nowPos - rO, nowPos - rO) - dot(finalPos - rO, finalPos - rO) > EPS)
+            break;
+        float vLight = lightIntense / dot(nowPos - lightPos, nowPos - lightPos);
+        float D = evaluateDensity(nowPos);
+        scatteredLight += D * vLight * phaseFunction(rO, lightPos, nowPos) * transmittance * step_long * visibility(0, nowPos);
+        transmittance *= exp(-D * step_long);
+    }
+    return vec4(scatteredLight, transmittance);
 }
 
 // ----------------------------------------------------------------------------
@@ -264,7 +308,7 @@ void main()
 
         // add to outgoing radiance Lo
 
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility(i);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility(i, fs_in.FragPos);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
@@ -273,6 +317,10 @@ void main()
     vec3 color = Lo + vec3(emissive);
     if(!SSR_test)
         color += ambient;
+    if(!SSR_test && scatter_ON) {
+        vec4 scatTrans = volumeScattering(viewPos, fs_in.FragPos);
+        color = color * scatTrans.w + scatTrans.xyz;
+    }
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
