@@ -226,12 +226,12 @@ float evaluateDensity(vec3 nowPos)
 {
     if(nowPos.x < -1.35294 || nowPos.x > 1.35294 ||
        nowPos.y < 0.68627  || nowPos.y > 1.66667 ||
-       nowPos.z < -1.39216 || nowPos.z > 1.43137)
+       nowPos.z < -1.39216 || nowPos.z > 1.43137) //not in house
         return 0.0;
-    return 0.5;
+    return 0.3;
 }
 
-#define SCATTER_SAMPLES 70
+#define SCATTER_SAMPLES 30
 vec4 volumeScattering(vec3 rO, vec3 finalPos)
 {
     const float lightIntense = 70.;
@@ -242,7 +242,7 @@ vec4 volumeScattering(vec3 rO, vec3 finalPos)
     float step_long = distance(finalPos, rO) / SCATTER_SAMPLES;
 
     vec3 rD = normalize(finalPos - rO) * step_long;
-    vec3 nowPos = rO;
+    vec3 nowPos = rO + fract(rand_2to1(finalPos.xy)) * rD;
     while(true) {
         nowPos += rD;
         if(dot(nowPos - rO, nowPos - rO) - dot(finalPos - rO, finalPos - rO) > EPS)
@@ -251,6 +251,7 @@ vec4 volumeScattering(vec3 rO, vec3 finalPos)
         float D = evaluateDensity(nowPos);
         scatteredLight += D * vLight * phaseFunction(rO, lightPos, nowPos) * transmittance * step_long * visibility(0, nowPos);
         transmittance *= exp(-D * step_long);
+
     }
     return vec4(scatteredLight, transmittance);
 }
