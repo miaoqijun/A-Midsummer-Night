@@ -185,8 +185,9 @@ void Scene::load_models()
 
 void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON, float delatTime, float totalTime)
 {
-    Particle.Update(delatTime);
-    point_lights[POINT_LIGHT_NUM - 1].position = Particle.get_light_position();
+    FireParticle.Update(delatTime);
+    SmokeParticle.Update(delatTime / 8);
+    point_lights[POINT_LIGHT_NUM - 1].position = FireParticle.get_light_position();
 
     // 0. Create depth cubemap transformation matrices
     GLfloat aspect = (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT;
@@ -256,9 +257,9 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    Particle.Draw(projection, view, viewPos);
-
+    
+    FireParticle.Draw(projection, view, viewPos);
+    SmokeParticle.Draw(projection, view);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE1);

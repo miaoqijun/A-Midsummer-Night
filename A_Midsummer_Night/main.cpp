@@ -112,6 +112,8 @@ int main()
         scene.render(camera.Position, view, projection, shadow_mode, SSR_test, SSR_ON, scatter_ON, deltaTime, (float)glfwGetTime());
         skybox.render(glm::mat4(glm::mat3(view)), projection);
         
+        
+        
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);

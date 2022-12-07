@@ -54,7 +54,8 @@ private:
     const GLuint SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
     GLuint depthMapFBO[POINT_LIGHT_NUM], depthCubemap[POINT_LIGHT_NUM];
     unsigned int framebuffer, textureColorbuffer, depthBuffer;
-    ParticleGenerator Particle;
+    FireParticleGenerator FireParticle;
+    SmokeParticleGenerator SmokeParticle;
     Water water;
     void load_models();
 

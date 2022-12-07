@@ -7,7 +7,6 @@ uniform mat4 projection;
 uniform mat4 view; 
 uniform mat4 model; 
 uniform vec3 gCameraPos;
-uniform sampler2D depthMap;
 
 in GS_OUT
 {
