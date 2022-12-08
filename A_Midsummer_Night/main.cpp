@@ -22,6 +22,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, int &shadow_mode, bool &SSR_test, bool &SSR_ON, bool& scatter_ON);
+void print_info(float delta_time, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON);
 
 // camera
 Camera camera(glm::vec3(2.0f, 1.0f, 4.0f));
@@ -85,10 +86,14 @@ int main()
 
     // render loop
     // -----------
-    int shadow_mode = 2;
-    bool SSR_test = false, SSR_ON = false, scatter_ON = false;
+    int shadow_mode = 2, last_shadow_mode = 2;
+    bool SSR_test = false, SSR_ON = false, scatter_ON = false, last_SSR_test = false, last_SSR_ON = false, last_scatter_ON = false;
+    float last_print = 0.0f;
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    std::cout << "shadows samples = " << SHADOWS_SAMPLES << std::endl;
+    std::cout << "SSR samples = " << SSR_SAMPLES << std::endl;
+    std::cout << "scatter samples = " << SCATTER_SAMPLES << std::endl;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -97,7 +102,17 @@ int main()
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
+        if (currentFrame - last_print > 1.0f || shadow_mode != last_shadow_mode ||
+           (SSR_test && SSR_ON) != (last_SSR_test && last_SSR_ON) || scatter_ON != last_scatter_ON) {
+            last_shadow_mode = shadow_mode;
+            last_SSR_test = SSR_test;
+            last_SSR_ON = SSR_ON;
+            last_scatter_ON = scatter_ON;
+            if (last_print > 0.0f)
+                std::cout << "\x1b[A" << "\x1b[A" << "\x1b[A" << "\x1b[A";
+            last_print = currentFrame;
+            print_info(deltaTime, shadow_mode, SSR_test, SSR_ON, scatter_ON);
+        }
         // input
         // -----
         processInput(window, shadow_mode, SSR_test, SSR_ON, scatter_ON);
@@ -124,6 +139,31 @@ int main()
     // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
+}
+
+void print_info(float deltaTime, int shadow_mode, bool SSR_test, bool SSR_ON, bool scatter_ON)
+{
+    std::cout << "FPS : " << int(1.0f / deltaTime) << std::endl;
+
+    std::cout << "shadow mode : ";
+    if (shadow_mode == 0)
+        std::cout << "hard shadow" << std::endl;
+    else if (shadow_mode == 1)
+        std::cout << "PCF        " << std::endl;
+    else
+        std::cout << "PCSS       " << std::endl;
+
+    std::cout << "SSR ";
+    if (SSR_test && SSR_ON)
+        std::cout << "ON " << std::endl;
+    else
+        std::cout << "OFF" << std::endl;
+
+    std::cout << "volumetric light ";
+    if (scatter_ON)
+        std::cout << "ON " << std::endl;
+    else
+        std::cout << "OFF" << std::endl;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
