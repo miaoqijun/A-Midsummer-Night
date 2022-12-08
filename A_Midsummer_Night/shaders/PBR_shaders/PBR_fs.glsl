@@ -1,4 +1,7 @@
 #version 330 core
+/* parameters (change before compiling according to config.h) */
+#define SHADOWS_SAMPLES 5
+
 out vec4 FragColor;
 
 #define NR_POINT_LIGHTS 3
@@ -29,9 +32,9 @@ struct PointLight {
 };
 
 // Shadow map related variables
-#define NUM_SAMPLES 30
-#define BLOCKER_SEARCH_NUM_SAMPLES NUM_SAMPLES
-#define PCF_NUM_SAMPLES NUM_SAMPLES
+
+#define BLOCKER_SEARCH_NUM_SAMPLES SHADOWS_SAMPLES
+#define PCF_NUM_SAMPLES SHADOWS_SAMPLES
 #define NUM_RINGS 10
 
 #define EPS 2e-2
@@ -51,9 +54,8 @@ uniform float far_plane;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform Material material;
 
-
-vec2 poissonDisk[NUM_SAMPLES];
-vec3 poissonDisk_3d[NUM_SAMPLES];
+vec2 poissonDisk[SHADOWS_SAMPLES];
+vec3 poissonDisk_3d[SHADOWS_SAMPLES];
 
 highp float rand_2to1(vec2 uv) { 
   // 0 - 1
@@ -64,14 +66,14 @@ highp float rand_2to1(vec2 uv) {
 
 void poissonDiskSamples( const in vec2 randomSeed ) {
 
-    float ANGLE_STEP = PI2 * float( NUM_RINGS ) / float( NUM_SAMPLES );
-    float INV_NUM_SAMPLES = 1.0 / float( NUM_SAMPLES );
+    float ANGLE_STEP = PI2 * float( NUM_RINGS ) / float( SHADOWS_SAMPLES );
+    float INV_NUM_SAMPLES = 1.0 / float( SHADOWS_SAMPLES );
 
     float angle = rand_2to1( randomSeed ) * PI2;
     float radius = INV_NUM_SAMPLES;
     float radiusStep = radius;
 
-    for(int i = 0; i < NUM_SAMPLES; i++) {
+    for(int i = 0; i < SHADOWS_SAMPLES; i++) {
         poissonDisk[i] = vec2( cos( angle ), sin( angle ) ) * pow( radius, 0.75 );
         radius += radiusStep;
         angle += ANGLE_STEP;
@@ -108,15 +110,15 @@ float PCF(int index, vec3 pos) {
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
     poissonDiskSamples(pos.xy);
-    for(int i = 0; i < NUM_SAMPLES; i++)
+    for(int i = 0; i < SHADOWS_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
-    for(int i = 0; i < NUM_SAMPLES; i++) {
+    for(int i = 0; i < SHADOWS_SAMPLES; i++) {
         float shadow_depth = texture(depthMap[index], fragToLight + poissonDisk_3d[i] * Stride / shadowmapSize).r;
         shadow_depth *= far_plane;
         float res = float(cur_depth < shadow_depth + EPS);
         visibility += res;
     }
-    return visibility / float(NUM_SAMPLES);
+    return visibility / float(SHADOWS_SAMPLES);
 }
 
 float PCSS(int index, vec3 pos){
@@ -132,11 +134,11 @@ float PCSS(int index, vec3 pos){
     LocalBasis(n, b1, b2);
     mat3 localToWorld = mat3(n, b1, b2);
     poissonDiskSamples(pos.xy);
-    for(int i = 0; i < NUM_SAMPLES; i++)
+    for(int i = 0; i < SHADOWS_SAMPLES; i++)
         poissonDisk_3d[i] = localToWorld * vec3(0.0, poissonDisk[i]);
 
     // STEP 1: avgblocker depth
-    for(int i = 0; i < NUM_SAMPLES; i++) {
+    for(int i = 0; i < SHADOWS_SAMPLES; i++) {
         float shadow_depth = texture(depthMap[index], fragToLight + poissonDisk_3d[i] * Stride / shadowmapSize).r;
         shadow_depth *= far_plane;
         if(cur_depth > shadow_depth + EPS) {
@@ -153,13 +155,13 @@ float PCSS(int index, vec3 pos){
         w_penumbra *= (cur_depth - block_depth) / block_depth;
     // STEP 3: filtering
     Stride = 10.;
-    for(int i = 0; i < NUM_SAMPLES; i++) {
+    for(int i = 0; i < SHADOWS_SAMPLES; i++) {
         float shadow_depth = texture(depthMap[index], fragToLight + poissonDisk_3d[i] * Stride * w_penumbra / shadowmapSize).r;
         shadow_depth *= far_plane;
         float res = float(cur_depth < shadow_depth + EPS);
         visibility += res;
     }
-    return visibility / float(NUM_SAMPLES);
+    return visibility / float(SHADOWS_SAMPLES);
 }
 
 float visibility(int index, vec3 pos) {
@@ -282,3 +284,6 @@ void main()
 
     FragColor = vec4(color, 1.0);
 }
+
+
+

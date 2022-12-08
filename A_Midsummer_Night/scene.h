@@ -50,6 +50,7 @@ private:
     };
     PointLight fire = { glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f),
         1.0f, 0.09f, 0.032f };
+    void set_shaders_parameters();
     std::vector<WorldModel> models;
     const GLuint SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
     GLuint depthMapFBO[POINT_LIGHT_NUM], depthCubemap[POINT_LIGHT_NUM];

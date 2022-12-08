@@ -1,7 +1,56 @@
 ﻿#include "scene.h"
+#include <fstream>
+#include <string>
+
+void Scene::set_shaders_parameters()
+{
+    ifstream fin;
+    ofstream fout;
+    int i;
+
+    /* PBR_fs.glsl */
+    fin.open(PBR_fs_path);
+    string s1;
+    i = 0;
+    while (!fin.eof()) {
+        string line;
+        getline(fin, line);
+        if (i == 2)
+            s1 += "#define SHADOWS_SAMPLES " + to_string(SHADOWS_SAMPLES) + '\n';
+        else
+            s1 += line + '\n';
+        i++;
+    }
+    fout.open(PBR_fs_path);
+    fout << s1;
+    fin.close();
+    fout.close();
+
+    /* SSR_fs.glsl */
+    fin.open(SSR_fs_path);
+    string s2;
+    i = 0;
+    while (!fin.eof()) {
+        string line;
+        getline(fin, line);
+        if (i == 2)
+            s2 += "#define SSR_SAMPLES " + to_string(SSR_SAMPLES) + '\n';
+        else if(i == 3)
+            s2 += "#define SCATTER_SAMPLES " + to_string(SCATTER_SAMPLES) + '\n';
+        else
+            s2 += line + '\n';
+        i++;
+    }
+    fout.open(SSR_fs_path);
+    fout << s2;
+    fin.close();
+    fout.close();
+}
 
 Scene::Scene()
 {
+    set_shaders_parameters();
+
     PBR_shader = Shader(PBR_vs_path, PBR_fs_path);
     PBR_shader.use();
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {

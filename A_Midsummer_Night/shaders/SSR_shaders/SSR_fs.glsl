@@ -1,4 +1,8 @@
 #version 330 core
+/* parameters (change before compiling according to config.h) */
+#define SSR_SAMPLES 20
+#define SCATTER_SAMPLES 50
+
 out vec4 FragColor;
 
 struct Material {
@@ -248,9 +252,7 @@ vec3 PBR_shading(vec3 hitPos, vec3 hitColor)
 }
 
 //scatter
-
 #define EPS 2e-2
-#define SCATTER_SAMPLES 50
 #define HOUSE_MIN_X -1.35294
 #define HOUSE_MAX_X 1.35294
 #define HOUSE_MIN_Y 0.68627
@@ -313,8 +315,6 @@ vec4 volumeScattering(vec3 rO, vec3 finalPos)
     return vec4(scatteredLight, transmittance);
 }
 
-#define SAMPLE_NUM 20
-
 void main() {
     vec3 albedo = pow(texture(material.texture_albedo1, fs_in.TexCoords).rgb, vec3(2.2));
     float ao = texture(material.texture_ao1, fs_in.TexCoords).x;
@@ -327,7 +327,7 @@ void main() {
 
     if(SSR_test && SSR_ON) {
         vec3 L_in = vec3(0.0);
-        for(int i = 0; i < SAMPLE_NUM; i++) {    
+        for(int i = 0; i < SSR_SAMPLES; i++) {    
             vec3 normal = normalize(fs_in.Normal);
             vec3 b1, b2;
             LocalBasis(normal, b1, b2);
@@ -341,7 +341,7 @@ void main() {
                 L_in += PBR_shading(hitPos, texture(colorMap, uv_hit).rgb);
             }
         }
-        L_in /= float(SAMPLE_NUM);
+        L_in /= float(SSR_SAMPLES);
   
         L += L_in;
     }
@@ -357,3 +357,5 @@ void main() {
 
     FragColor = vec4(L, 1.0);
 }
+
+
