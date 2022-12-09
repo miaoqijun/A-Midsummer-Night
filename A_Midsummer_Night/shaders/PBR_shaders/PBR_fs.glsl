@@ -1,6 +1,6 @@
 #version 330 core
 /* parameters (change before compiling according to config.h) */
-#define SHADOWS_SAMPLES 5
+#define SHADOWS_SAMPLES 30
 
 out vec4 FragColor;
 
@@ -284,6 +284,16 @@ void main()
 
     FragColor = vec4(color, 1.0);
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

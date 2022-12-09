@@ -45,7 +45,7 @@ private:
         1.0f, 0.09f, 0.032f,
         glm::vec3(1.5f, 2.0f, 2.5f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 1.0f, 1.0f),
         1.0f, 0.09f, 0.032f,
-        glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), 0.2f * glm::vec3(1.0f, 0.776f, 0.42f), glm::vec3(1.0f, 1.0f, 1.0f),
         1.0f, 0.09f, 0.032f,
     };
     PointLight fire = { glm::vec3(-1.35f, 0.86f, -0.018f), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f),
