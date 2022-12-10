@@ -280,7 +280,7 @@ void main()
 
     vec3 albedo = pow(texture(texture_albedo, fs_in.TexCoords).rgb, vec3(2.2));
     float metalness = 0.0;
-    float roughness = 0.0;
+    float roughness = 0.2;
     float ao = 0.0;
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
@@ -344,5 +344,5 @@ void main()
         L_in = Lo;
 
     FragColor = vec4((Lo + L_in) / 2, 1.0);
-    //FragColor = vec4(fs_in.Normal, 1.0);
+    //FragColor = vec4(1.0);
 }

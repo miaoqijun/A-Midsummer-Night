@@ -12,13 +12,17 @@ void Scene::set_shaders_parameters()
     fin.open(PBR_fs_path);
     string s1;
     i = 0;
-    while (!fin.eof()) {
+    while (true) {
         string line;
         getline(fin, line);
         if (i == 2)
             s1 += "#define SHADOWS_SAMPLES " + to_string(SHADOWS_SAMPLES) + '\n';
-        else
-            s1 += line + '\n';
+        else {
+            s1 += line;
+            if (fin.eof())
+                break;
+            s1 += '\n';
+        }
         i++;
     }
     fout.open(PBR_fs_path);
@@ -30,15 +34,19 @@ void Scene::set_shaders_parameters()
     fin.open(SSR_fs_path);
     string s2;
     i = 0;
-    while (!fin.eof()) {
+    while (true) {
         string line;
         getline(fin, line);
         if (i == 2)
             s2 += "#define SSR_SAMPLES " + to_string(SSR_SAMPLES) + '\n';
         else if(i == 3)
             s2 += "#define SCATTER_SAMPLES " + to_string(SCATTER_SAMPLES) + '\n';
-        else
-            s2 += line + '\n';
+        else {
+            s2 += line;
+            if (fin.eof())
+                break;
+            s2 += '\n';
+        }
         i++;
     }
     fout.open(SSR_fs_path);
