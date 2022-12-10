@@ -33,9 +33,6 @@
     <ClCompile Include="particle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="water.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="fft.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="water.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="fft.h">
@@ -116,9 +110,6 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="shaders\water_shaders\water_vs.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="shaders\water_shaders\fft_water_vs.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

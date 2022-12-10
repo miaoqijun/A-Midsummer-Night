@@ -4,7 +4,7 @@
 #include <math.h>
 #include <complex>
 
-#define M_PI 3.14159
+#define M_PI 3.14159f
 
 class cFFT {
 private:

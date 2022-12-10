@@ -16,10 +16,10 @@ float gaussrand()
             S = V1 * V1 + V2 * V2;
         } while (S >= 1 || S == 0);
 
-        X = V1 * sqrt(-2 * log(S) / S);
+        X = float(V1 * sqrt(-2 * log(S) / S));
     }
     else
-        X = V2 * sqrt(-2 * log(S) / S);
+        X = float(V2 * sqrt(-2 * log(S) / S));
 
     phase = 1 - phase;
 
@@ -46,7 +46,7 @@ std::complex<float> gaussianRandomVariable() {
 }
 
 cOcean::cOcean(const int N, const float A, const glm::vec2 w, const float length, const bool geometry) :
-    g(9.81), geometry(geometry), N(N), Nplus1(N + 1), A(A), w(w), length(length),
+    g(9.81f), geometry(geometry), N(N), Nplus1(N + 1), A(A), w(w), length(length),
     vertices(0), indices(0), h_tilde(0), h_tilde_slopex(0), h_tilde_slopez(0), h_tilde_dx(0), h_tilde_dz(0), fft(0)
 {
     h_tilde = new std::complex<float>[N * N];
@@ -101,7 +101,7 @@ cOcean::cOcean(const int N, const float A, const glm::vec2 w, const float length
         }
     }
 
-    ocean_shader = Shader("shaders/water_shaders/fft_water_vs.glsl", "shaders/water_shaders/water_fs.glsl", "shaders/water_shaders/water_gs.glsl");
+    ocean_shader = Shader("shaders/water_shaders/water_vs.glsl", "shaders/water_shaders/water_fs.glsl", "shaders/water_shaders/water_gs.glsl");
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo_vertices);
@@ -175,7 +175,7 @@ float cOcean::phillips(int n_prime, int m_prime) {
     float L2 = L * L;
 
     //return A * exp(-1.0f / (k_length2 * L2)) / k_length4 * k_dot_w2;
-    float damping = 0.001;
+    float damping = 0.001f;
     float l2 = L2 * damping * damping;
 
     return A * exp(-1.0f / (k_length2 * L2)) / k_length4 * k_dot_w2 * exp(-k_length2 * l2);
@@ -295,7 +295,7 @@ void cOcean::evaluateWavesFFT(float t) {
             vertices[index1].ny = 0;
             vertices[index1].nz = 0;
 
-            sign = signs[(n_prime + m_prime) & 1];
+            sign = int(signs[(n_prime + m_prime) & 1]);
 
             h_tilde[index] = h_tilde[index] * (float)sign;
 
