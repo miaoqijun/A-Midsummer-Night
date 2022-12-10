@@ -100,15 +100,15 @@ Scene::Scene()
     SSR_shader.setInt("depthMap", 1);
     SSR_shader.setInt("lightDepthMap", 2);
 
-    water.water_shader.use();
+    Ocean.ocean_shader.use();
     for (int i = 0; i < POINT_LIGHT_NUM; i++) {
-        water.water_shader.setVec3("pointLights[" + to_string(i) + "].position", point_lights[i].position);
-        water.water_shader.setVec3("pointLights[" + to_string(i) + "].ambient", point_lights[i].ambient);
-        water.water_shader.setVec3("pointLights[" + to_string(i) + "].diffuse", point_lights[i].diffuse);
-        water.water_shader.setVec3("pointLights[" + to_string(i) + "].specular", point_lights[i].specular);
-        water.water_shader.setFloat("pointLights[" + to_string(i) + "].constant", point_lights[i].constant);
-        water.water_shader.setFloat("pointLights[" + to_string(i) + "].linear", point_lights[i].linear);
-        water.water_shader.setFloat("pointLights[" + to_string(i) + "].quadratic", point_lights[i].quadratic);
+        Ocean.ocean_shader.setVec3("pointLights[" + to_string(i) + "].position", point_lights[i].position);
+        Ocean.ocean_shader.setVec3("pointLights[" + to_string(i) + "].ambient", point_lights[i].ambient);
+        Ocean.ocean_shader.setVec3("pointLights[" + to_string(i) + "].diffuse", point_lights[i].diffuse);
+        Ocean.ocean_shader.setVec3("pointLights[" + to_string(i) + "].specular", point_lights[i].specular);
+        Ocean.ocean_shader.setFloat("pointLights[" + to_string(i) + "].constant", point_lights[i].constant);
+        Ocean.ocean_shader.setFloat("pointLights[" + to_string(i) + "].linear", point_lights[i].linear);
+        Ocean.ocean_shader.setFloat("pointLights[" + to_string(i) + "].quadratic", point_lights[i].quadratic);
     }
 
     // framebuffer configuration
@@ -346,10 +346,10 @@ void Scene::render(glm::vec3 viewPos, glm::mat4 view, glm::mat4 projection, int 
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glActiveTexture(GL_TEXTURE8);
     glBindTexture(GL_TEXTURE_2D, depthBuffer);
-    water.water_shader.use();
-    water.water_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
-    water.water_shader.setInt("shadow_mode", shadow_mode);
-    water.water_shader.setVec3("viewPos", viewPos);
-    water.water_shader.setFloat("far_plane", far);
-    water.render(view, projection, totalTime);
+    Ocean.ocean_shader.use();
+    Ocean.ocean_shader.setVec3("pointLights[" + to_string(POINT_LIGHT_NUM - 1) + "].position", point_lights[POINT_LIGHT_NUM - 1].position);
+    Ocean.ocean_shader.setInt("shadow_mode", shadow_mode);
+    Ocean.ocean_shader.setVec3("viewPos", viewPos);
+    Ocean.ocean_shader.setFloat("far_plane", far);
+    Ocean.render(totalTime, viewPos, projection, view, glm::mat4(1.0f), 1);
 }

@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fft.cpp" />
+    <ClCompile Include="FFT_OCEAN.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="particle.cpp" />
@@ -147,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="fft.h" />
+    <ClInclude Include="FFT_OCEAN.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="skybox.h" />
@@ -167,6 +171,7 @@
     <None Include="shaders\skybox_shaders\skybox_vs.glsl" />
     <None Include="shaders\SSR_shaders\SSR_fs.glsl" />
     <None Include="shaders\SSR_shaders\SSR_vs.glsl" />
+    <None Include="shaders\water_shaders\fft_water_vs.glsl" />
     <None Include="shaders\water_shaders\water_fs.glsl" />
     <None Include="shaders\water_shaders\water_gs.glsl" />
     <None Include="shaders\water_shaders\water_vs.glsl" />

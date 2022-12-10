@@ -7,7 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "particle.h"
-#include "water.h"
+//#include "water.h"
+#include "FFT_OCEAN.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -57,7 +58,8 @@ private:
     unsigned int framebuffer, textureColorbuffer, depthBuffer;
     FireParticleGenerator FireParticle;
     SmokeParticleGenerator SmokeParticle;
-    Water water;
+    //Water water;
+    cOcean Ocean;
     void load_models();
 
 public:
