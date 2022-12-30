@@ -19,6 +19,6 @@ void main()
     gl_Position = projection * view * model * vec4(position, 1.0f);
     vs_out.FragPos = vec3(model * vec4(position, 1.0));
     vs_out.TexCoords = texCoords;
-    vs_out.Normal = normal;
+    vs_out.Normal = mat3(transpose(inverse(model))) * normal;
     vs_out.worldToScreen = projection * view;
 }

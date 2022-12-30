@@ -16,7 +16,7 @@ out vec2 TexCoords;
 void main() {
     gl_Position = projection * view * model * vec4(vertex.x, vertex.y * 0.01, vertex.z, 1.0);
 
-    Normal = normalize(normal);
+    Normal = normalize(mat3(transpose(inverse(model))) * normal);
     FragPos = vec3(model * vec4(vertex.x, vertex.y * 0.01, vertex.z, 1.0));
     TexCoords = atexture + vec2(time) / 5000.0f;
 }

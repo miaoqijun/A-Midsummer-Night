@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A_Midsummer_Night", "A_Midsummer_Night\A_Midsummer_Night.vcxproj", "{084AC177-4801-43B6-8C8E-953FFED5447C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ground_Generate", "Ground_Generate\Ground_Generate.vcxproj", "{76487543-0B98-4D4B-8409-D26FF04D3CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{084AC177-4801-43B6-8C8E-953FFED5447C}.Release|x64.Build.0 = Release|x64
 		{084AC177-4801-43B6-8C8E-953FFED5447C}.Release|x86.ActiveCfg = Release|Win32
 		{084AC177-4801-43B6-8C8E-953FFED5447C}.Release|x86.Build.0 = Release|Win32
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Debug|x64.ActiveCfg = Debug|x64
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Debug|x64.Build.0 = Debug|x64
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Debug|x86.ActiveCfg = Debug|Win32
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Debug|x86.Build.0 = Debug|Win32
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Release|x64.ActiveCfg = Release|x64
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Release|x64.Build.0 = Release|x64
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Release|x86.ActiveCfg = Release|Win32
+		{76487543-0B98-4D4B-8409-D26FF04D3CEB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
